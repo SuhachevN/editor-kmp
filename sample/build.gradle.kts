@@ -1,3 +1,5 @@
+@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.kmp.library)
@@ -11,6 +13,9 @@ kotlin {
         namespace = "com.comixon.editor.sample.shared"
         compileSdk = 36
         minSdk = 26
+        withDeviceTestBuilder { sourceSetTreeName = "test" }.configure {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
     }
     jvm("desktop")
     iosArm64()
@@ -23,6 +28,10 @@ kotlin {
         }
     }
     sourceSets {
+        getByName("androidDeviceTest").dependencies {
+            implementation(libs.android.test.runner)
+            implementation("androidx.compose.ui:ui-test-manifest:1.9.3")
+        }
         commonMain.dependencies {
             implementation(project(":editor-compose"))
             implementation(project(":editor-network"))
@@ -32,7 +41,10 @@ kotlin {
             implementation(libs.filekit.dialogs)
             implementation(libs.ktor.core)
         }
-        commonTest.dependencies { implementation(kotlin("test")) }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(compose.uiTest)
+        }
         getByName("desktopTest").dependencies { implementation(compose.desktop.uiTestJUnit4) }
         androidMain.dependencies { implementation(libs.activity.compose) }
         getByName("desktopMain").dependencies { implementation(compose.desktop.currentOs) }

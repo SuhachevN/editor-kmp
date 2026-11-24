@@ -11,12 +11,16 @@ kotlin {
         namespace = "com.comixon.editor.editorcompose"
         compileSdk = 36
         minSdk = 26
+        withDeviceTestBuilder { sourceSetTreeName = "test" }.configure {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
     }
     jvm("desktop")
     iosArm64()
     iosSimulatorArm64()
     jvmToolchain(17)
     sourceSets {
+        getByName("androidDeviceTest").dependencies { implementation(libs.android.test.runner) }
         commonMain.dependencies {
             api(project(":editor-core"))
             api(compose.foundation)
