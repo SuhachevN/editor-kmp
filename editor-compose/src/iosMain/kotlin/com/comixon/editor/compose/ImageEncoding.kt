@@ -12,7 +12,15 @@ actual fun encodeImage(
 ): ByteArray {
     require(quality in 0..100)
     val format = if (encoding == ImageEncoding.PNG) EncodedImageFormat.PNG else EncodedImageFormat.JPEG
-    return Image.makeFromBitmap(bitmap.asSkiaBitmap()).use { image ->
-        image.encodeToData(format, quality)?.use { it.bytes } ?: error("Image encoding failed")
+    val image = Image.makeFromBitmap(bitmap.asSkiaBitmap())
+    try {
+        val data = image.encodeToData(format, quality) ?: error("Image encoding failed")
+        try {
+            return data.bytes
+        } finally {
+            data.close()
+        }
+    } finally {
+        image.close()
     }
 }
