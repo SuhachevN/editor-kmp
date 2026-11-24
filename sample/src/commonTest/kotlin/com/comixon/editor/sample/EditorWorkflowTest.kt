@@ -6,16 +6,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.semantics.SemanticsActions
-import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.click
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.runComposeUiTest
@@ -31,6 +28,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalTestApi::class)
 class EditorWorkflowTest {
@@ -119,11 +117,7 @@ class EditorWorkflowTest {
                 }
                 val before = workspace.editor.project
                 onNodeWithTag("editor_tool_CROP").performClick()
-                onNode(
-                    SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo),
-                ).performSemanticsAction(SemanticsActions.SetProgress) {
-                    it(2f)
-                }
+                onNodeWithTag("editor_crop_zoom").performTouchInput { click(center) }
                 onNodeWithContentDescription("Comic editor canvas").performTouchInput {
                     swipe(Offset(160f, 200f), Offset(220f, 250f), durationMillis = 500)
                 }
@@ -133,17 +127,12 @@ class EditorWorkflowTest {
                     assertEquals(false, workspace.editor.canUndo)
                 }
                 onNodeWithTag("editor_tool_CROP").performClick()
-                onNode(
-                    SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo),
-                ).performSemanticsAction(SemanticsActions.SetProgress) {
-                    it(2f)
-                }
+                onNodeWithTag("editor_crop_zoom").performTouchInput { click(center) }
                 onNodeWithTag("editor_done").performClick()
                 runOnIdle {
-                    assertEquals(
-                        2.0,
+                    assertTrue(
                         workspace.editor.project.selectedFrame!!
-                            .crop.scale,
+                            .crop.scale in 2.4..2.6,
                     )
                     workspace.editor.undo()
                     assertEquals(before, workspace.editor.project)

@@ -165,7 +165,9 @@ private fun nativeSpeechCommand(): List<String>? {
             val configured = System.getProperty("comixon.speech.helper")
             val helper =
                 File(
-                    configured ?: resources?.let { File(it, "comixon-speech").path } ?: "build/native-resources/macos/comixon-speech",
+                    configured ?: resources?.let { File(it, "comixon-speech").path }
+                        ?: listOf("build/native-resources/macos/comixon-speech", "sample/build/native-resources/macos/comixon-speech")
+                            .firstOrNull { File(it).canExecute() } ?: return null,
                 )
             if (helper.canExecute()) listOf(helper.absolutePath, language) else null
         }

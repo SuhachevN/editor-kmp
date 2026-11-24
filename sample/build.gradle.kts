@@ -92,7 +92,6 @@ val compileMacSpeech by tasks.registering(Exec::class) {
 compose.desktop {
     application {
         mainClass = "com.comixon.editor.sample.MainKt"
-        dependsOn("compileMacSpeech")
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ComixonEditor"
@@ -123,3 +122,7 @@ compose.desktop {
 }
 
 compose.resources { packageOfResClass = "com.comixon.editor.sample.resources" }
+
+tasks.matching { it.name in setOf("prepareAppResources", "run") }.configureEach {
+    dependsOn(compileMacSpeech)
+}

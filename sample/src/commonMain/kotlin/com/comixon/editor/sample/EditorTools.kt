@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.comixon.editor.compose.EditorState
@@ -90,8 +91,14 @@ internal fun CropTools(state: EditorState) {
     Column(Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(EditorLabel.Zoom.text())
         Slider(
+            modifier = Modifier.testTag("editor_crop_zoom"),
             value = frame.crop.scale.toFloat(),
-            onValueChange = { zoom -> state.edit { EditorReducer.transformSelectedFrameCrop(it, zoom / frame.crop.scale, 0.0, 0.0) } },
+            onValueChange = { zoom ->
+                state.edit { project ->
+                    val current = project.selectedFrame ?: return@edit project
+                    EditorReducer.transformSelectedFrameCrop(project, zoom / current.crop.scale, 0.0, 0.0)
+                }
+            },
             valueRange = 1f..4f,
         )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
