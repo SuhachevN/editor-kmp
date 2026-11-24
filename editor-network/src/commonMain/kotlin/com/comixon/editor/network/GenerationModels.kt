@@ -1,6 +1,8 @@
 package com.comixon.editor.network
 
 import com.comixon.editor.core.SpeechGeneration
+import io.ktor.http.URLProtocol
+import io.ktor.http.Url
 
 /** Credentials are supplied per request and never persisted by the editor. */
 class ServerConfig(
@@ -9,7 +11,16 @@ class ServerConfig(
     val token: suspend () -> String? = { null },
 ) {
     init {
-        require(baseUrl.startsWith("https://")) { "The server URL must use HTTPS" }
+        val authority =
+            baseUrl
+                .substringAfter("https://", "")
+                .substringBefore('/')
+                .substringBefore('?')
+                .substringBefore('#')
+        require(authority.isNotBlank()) { "The server URL must include a host" }
+        val url = Url(baseUrl)
+        require(url.protocol == URLProtocol.HTTPS && url.host.isNotBlank()) { "The server URL must use HTTPS and include a host" }
+        require(url.parameters.isEmpty() && url.fragment.isEmpty()) { "The server URL must not include a query or fragment" }
     }
 }
 

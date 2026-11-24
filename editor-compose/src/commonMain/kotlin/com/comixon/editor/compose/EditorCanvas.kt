@@ -14,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFontFamilyResolver
@@ -37,6 +39,9 @@ import com.comixon.editor.rendering.BubbleTailEditing
 import com.comixon.editor.rendering.FrameScene
 import com.comixon.editor.rendering.drawEditorFrame
 import com.comixon.editor.rendering.prepareFrameScene
+import com.comixon.editor.resources.Res
+import com.comixon.editor.resources.editor_bubble_resize
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun rememberEditorTextMeasurer(): TextMeasurer {
@@ -62,9 +67,12 @@ fun EditorCanvas(
     scene: FrameScene?,
     modifier: Modifier = Modifier,
     cropMode: Boolean = false,
+    alignCanvasTop: Boolean = false,
+    preserveCanvasWidth: Boolean = false,
 ) {
-    BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
-        val width = minOf(maxWidth, maxHeight * .75f)
+    val resizePainter = painterResource(Res.drawable.editor_bubble_resize)
+    BoxWithConstraints(modifier, contentAlignment = if (alignCanvasTop) Alignment.TopCenter else Alignment.Center) {
+        val width = if (preserveCanvasWidth) maxWidth else minOf(maxWidth, maxHeight * .75f)
         Canvas(
             Modifier
                 .size(width, width / .75f)
@@ -109,6 +117,7 @@ fun EditorCanvas(
                     } else {
                         var active: String? = null
                         var mode = DragMode.MOVE
+                        var resizeCorner = ResizeCorner.BOTTOM_END
                         detectDragGestures(
                             onDragStart = { position ->
                                 val scale = size.width / 1080f
@@ -120,15 +129,19 @@ fun EditorCanvas(
                                         .orEmpty()
                                 val selected = layers.firstOrNull { it.id == state.project.selectedLayerId }
                                 val tail = selected as? EditorBubbleLayer
+                                val corner =
+                                    selected?.let { layer ->
+                                        resizeCorners(layer).firstOrNull { (p - it.position(layer.hitBounds())).getDistance() <= radius }
+                                    }
                                 mode =
                                     when {
                                         tail != null &&
                                             tail.isTailEnabled &&
                                             (p - tail.tailOffset()).getDistance() <= radius -> DragMode.TAIL
-                                        selected != null &&
-                                            (p - selected.hitBounds().bottomRight).getDistance() <= radius -> DragMode.RESIZE
+                                        corner != null -> DragMode.RESIZE
                                         else -> DragMode.MOVE
                                     }
+                                if (corner != null) resizeCorner = corner
                                 val hit = if (mode == DragMode.MOVE) layers.lastOrNull { it.hitBounds().contains(p) } else selected
                                 active = hit?.id
                                 state.select { EditorReducer.selectLayer(it, active) }
@@ -151,7 +164,15 @@ fun EditorCanvas(
                             state.edit { project ->
                                 when (mode) {
                                     DragMode.MOVE -> BubbleTailEditing.moveLayer(project, id, dx, dy)
-                                    DragMode.RESIZE -> BubbleTailEditing.resizeLayer(project, id, 0.0, 0.0, dx, dy)
+                                    DragMode.RESIZE ->
+                                        BubbleTailEditing.resizeLayer(
+                                            project,
+                                            id,
+                                            if (resizeCorner.left) dx else 0.0,
+                                            if (resizeCorner.top) dy else 0.0,
+                                            if (!resizeCorner.left) dx else 0.0,
+                                            if (!resizeCorner.top) dy else 0.0,
+                                        )
                                     DragMode.TAIL -> BubbleTailEditing.moveBubbleTail(project, id, dx, dy)
                                 }
                             }
@@ -165,11 +186,21 @@ fun EditorCanvas(
                 if (!cropMode) {
                     state.project.selectedFrame?.layers?.firstOrNull { it.id == state.project.selectedLayerId }?.let { layer ->
                         val rect = layer.hitBounds()
-                        val color = Color(0xFFE44F3B)
+                        val color = Color(0xFFFF3B30)
                         drawRect(color, rect.topLeft, rect.size, style = Stroke(1.5.dp.toPx() / ratio))
-                        drawCircle(color, 7.dp.toPx() / ratio, rect.bottomRight)
+                        if (layer is EditorBubbleLayer) {
+                            val handle = 32.dp.toPx() / ratio
+                            translate(rect.right - handle / 2, rect.bottom - handle / 2) {
+                                with(resizePainter) { draw(Size(handle, handle)) }
+                            }
+                        } else {
+                            resizeCorners(layer).forEach { corner ->
+                                drawCircle(Color.White, 6.5.dp.toPx() / ratio, corner.position(rect))
+                                drawCircle(color, 4.5.dp.toPx() / ratio, corner.position(rect))
+                            }
+                        }
                         if (layer is EditorBubbleLayer && layer.isTailEnabled) {
-                            drawCircle(Color(0xFFDC6803), 7.dp.toPx() / ratio, layer.tailOffset())
+                            drawCircle(Color(.863f, .314f, 0f), 5.dp.toPx() / ratio, layer.tailOffset())
                         }
                     }
                 }
@@ -186,6 +217,22 @@ fun EditorCanvas(
 }
 
 private enum class DragMode { MOVE, RESIZE, TAIL }
+
+private enum class ResizeCorner(
+    val left: Boolean,
+    val top: Boolean,
+) {
+    TOP_START(true, true),
+    TOP_END(false, true),
+    BOTTOM_START(true, false),
+    BOTTOM_END(false, false),
+    ;
+
+    fun position(rect: Rect): Offset = Offset(if (left) rect.left else rect.right, if (top) rect.top else rect.bottom)
+}
+
+private fun resizeCorners(layer: EditorLayer): List<ResizeCorner> =
+    if (layer is EditorBubbleLayer) listOf(ResizeCorner.BOTTOM_END) else ResizeCorner.entries
 
 private fun EditorLayer.hitBounds(): Rect =
     Rect(

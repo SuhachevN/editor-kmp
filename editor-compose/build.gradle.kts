@@ -11,6 +11,7 @@ kotlin {
         namespace = "com.comixon.editor.editorcompose"
         compileSdk = 36
         minSdk = 26
+        androidResources.enable = true
         withDeviceTestBuilder { sourceSetTreeName = "test" }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }

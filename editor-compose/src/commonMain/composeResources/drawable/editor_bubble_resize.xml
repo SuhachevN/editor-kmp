@@ -1,0 +1,13 @@
+<!-- Paths ported from the iOS Comixon Resize.imageset/Resize.pdf (28 x 28). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp"
+    android:height="28dp"
+    android:viewportWidth="28"
+    android:viewportHeight="28">
+    <path android:fillColor="#FC4F00"
+        android:pathData="M14,2 C20.62742,2 26,7.37258 26,14 C26,20.62742 20.62742,26 14,26 C7.37258,26 2,20.62742 2,14 C2,7.37258 7.37258,2 14,2 Z" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M10,10 L10,13 C10,13.55228 9.55228,14 9,14 C8.44772,14 8,13.55228 8,13 L8,10 L8,8 L13,8 C13.55228,8 14,8.44772 14,9 C14,9.55228 13.55228,10 13,10 L10,10 Z" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M18,18 L18,15 C18,14.44772 18.44772,14 19,14 C19.55228,14 20,14.44772 20,15 L20,18 L20,20 L15,20 C14.44772,20 14,19.55228 14,19 C14,18.44772 14.44772,18 15,18 L18,18 Z" />
+</vector>

@@ -40,5 +40,4 @@ internal fun demoProject(): EditorProject =
                         ),
                 ),
             ),
-        selectedLayerId = "bubble_0",
     )

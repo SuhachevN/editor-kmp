@@ -1,43 +1,57 @@
 # Comixon Editor
 
-A standalone Kotlin Multiplatform comic editor for **Android, iOS and Desktop**, extracted from Comixon. Editing and rendering live in shared Kotlin code.
+A standalone **Kotlin Multiplatform** comic editor for Android and Desktop (Windows, macOS and Linux). The canvas, editing operations and UI are shared Kotlin code. The original Comixon application is kept separate. iOS is deferred.
 
 - 24 bubble styles, editable tails, image masks and 14 lettering variants.
-- Text and font editing, layers, frames, crop, rotation, flip and instant filters.
-- Undo/redo, portable JSON projects and PNG export for a frame or a complete strip.
-- Comixon AI filters and dialogue generation through direct HTTP requests.
+- A native photo picker before the editor, with multi-photo import and a separate demo.
+- Text, fonts, layers, frames, crop, rotation, flip and instant filters.
+- Undo/redo, portable JSON projects and PNG frame/strip export.
+- AI images and dialogue through the existing Comixon HTTP API.
+- System speech dictation into bubble and lettering text on Android, Windows and macOS.
 
-## Modules
+## Try it
 
-| Module | Responsibility |
-| --- | --- |
-| `editor-core` | Document model, editing operations and JSON format |
-| `editor-compose` | Shared geometry, text layout, canvas, gestures and export |
-| `editor-network` | Ktor client for the existing Comixon API |
-| `sample` | Shared demo UI and Desktop/iOS entry points |
-| `androidApp` / `iosApp` | Platform launchers |
+Open the latest successful [Build and test run](https://github.com/SuhachevN/editor-kmp/actions/workflows/ci.yml) and download an artifact:
 
-## Run
+| Platform | Artifact | Start |
+| --- | --- | --- |
+| Android 8+ | android-demo | Unzip and install the APK |
+| Windows | windows-demo | Unzip and run ComixonEditor.exe |
+| macOS (Apple Silicon) | macos-demo-macos-15 | Open the DMG and copy the app to Applications |
+| macOS (Intel) | macos-demo-macos-15-intel | Open the DMG and copy the app to Applications |
 
-Use **JDK 17** and Android SDK 36. Set `sdk.dir` in an untracked `local.properties`, or set `ANDROID_HOME`.
+Desktop packages include Java. macOS builds are unsigned; see [testing notes](docs/testing.md) for first launch and platform checks.
+
+## Develop
+
+Use JDK 17. Android builds also need SDK 36 and ANDROID_HOME or an untracked local.properties with sdk.dir. On Windows use gradlew.bat.
 
 ```shell
 ./gradlew :sample:run                 # Desktop
-./gradlew :androidApp:assembleDebug   # Android; or run androidApp in Android Studio
+./gradlew :androidApp:assembleDebug   # Android
+./gradlew :sample:packageDmg          # macOS only; includes native speech helper
+./gradlew :sample:createDistributable # Desktop app with bundled Java
 ```
 
-For iOS, use a Mac with Xcode and XcodeGen: `xcodegen generate --spec iosApp/project.yml`, then open `iosApp/ComixonEditor.xcodeproj` and run the ComixonEditor scheme. Xcode builds the shared Kotlin framework automatically.
+| Module | Responsibility |
+| --- | --- |
+| editor-core | Document model, editing operations and JSON |
+| editor-compose | Geometry, text layout, canvas, gestures and export |
+| editor-network | Direct Ktor integration with Comixon |
+| sample | Shared editor UI and platform adapters |
+| androidApp / iosApp | Platform launchers; iOS retained for later work |
 
 ## Test
 
 ```shell
 ./gradlew ktlintCheck :editor-core:desktopTest :editor-compose:desktopTest :editor-network:desktopTest :sample:desktopTest
-# macOS / Apple Silicon
-./gradlew :editor-core:iosSimulatorArm64Test :editor-compose:iosSimulatorArm64Test :editor-network:iosSimulatorArm64Test
+./gradlew :editor-core:connectedAndroidDeviceTest :editor-compose:connectedAndroidDeviceTest :editor-network:connectedAndroidDeviceTest :sample:connectedAndroidDeviceTest
 ```
 
-Tests cover bubble geometry and tail history, scaling, masks, editing, undo/redo, JSON round trips and HTTP contracts. GitHub Actions builds Android and iOS and runs the shared tests. Network tests use MockEngine and do not consume generation credits.
+CI checks Android on an emulator and Desktop on Windows, macOS and Linux, including packaged Windows/macOS startup. Tests cover geometry, gestures, text/crop flows, export, undo/redo, serialization, dictation insertion, HTTP contracts and the complete two-request generation workflow. Network tests use MockEngine and do not consume credits. iOS checks are an optional manual workflow input.
 
 ## Server
 
-In the demo's **AI** tab, set the server URL, language and a valid Comixon token. The default server is `https://dev.comixon.com`. Requests go directly to `/v2/filter` and `/v2/get_speech`; WebSockets are not used. Tokens stay in memory and are excluded from project files. Live generation requires server access and an eligible Comixon account.
+Set URL, language and optional Comixon session token in **⋯ → Server settings**. The default server is https://dev.comixon.com. Without a Comixon token, Start generation shows a short authorization notification and sends no requests. With a token it sends **/v2/filter** (anime image) and **/v2/get_speech** (dialogue) concurrently. AI filter selection uses /v2/filter; blending also sends a second image. WebSockets are not used. Tokens stay in memory and are excluded from project files. Authorization and generation limits are controlled by the existing server; publishing posts is outside this editor.
+
+[Platform checks and live-network status](docs/testing.md)

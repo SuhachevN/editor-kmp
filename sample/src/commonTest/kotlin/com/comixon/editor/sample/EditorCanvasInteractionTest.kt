@@ -21,8 +21,10 @@ import com.comixon.editor.compose.rememberEditorTextMeasurer
 import com.comixon.editor.compose.rememberFrameScene
 import com.comixon.editor.core.EditorBubbleLayer
 import com.comixon.editor.core.EditorFrame
+import com.comixon.editor.core.EditorLetterLayer
 import com.comixon.editor.core.EditorProject
 import com.comixon.editor.core.EditorReducer
+import com.comixon.editor.core.StyleCatalog
 import com.comixon.editor.core.selectedFrame
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -122,11 +124,37 @@ class EditorCanvasInteractionTest {
             }
         }
 
+    @Test
+    fun letteringCanBeResizedFromTheTopLeftCorner() {
+        val project = EditorReducer.addLettering(EditorProject(listOf(EditorFrame("frame"))), StyleCatalog.defaultLetteringStyle, "WOW!")
+        withCanvas(project = project) { state, initial ->
+            val before = initial.selectedFrame!!.layers.single() as EditorLetterLayer
+            val corner = Offset((before.bounds.x / 3).toFloat(), (before.bounds.y / 3).toFloat())
+            onNodeWithContentDescription("Comic editor canvas").performTouchInput {
+                swipe(corner, corner + Offset(25f, 20f), durationMillis = 500)
+            }
+            runOnIdle {
+                val after =
+                    state.project.selectedFrame!!
+                        .layers
+                        .single() as EditorLetterLayer
+                assertTrue(after.bounds.x > before.bounds.x)
+                assertTrue(after.bounds.y > before.bounds.y)
+                assertTrue(after.bounds.width < before.bounds.width)
+                assertEquals(before.bounds.x + before.bounds.width, after.bounds.x + after.bounds.width, .0001)
+                assertEquals(before.bounds.y + before.bounds.height, after.bounds.y + after.bounds.height, .0001)
+                state.undo()
+                assertEquals(initial, state.project)
+            }
+        }
+    }
+
     private fun withCanvas(
         cropMode: Boolean = false,
+        project: EditorProject? = null,
         block: ComposeUiTest.(EditorState, EditorProject) -> Unit,
     ) = runComposeUiTest {
-        val initial = EditorReducer.addDefaultBubble(EditorProject(listOf(EditorFrame("frame"))), "Hello, world!")
+        val initial = project ?: EditorReducer.addDefaultBubble(EditorProject(listOf(EditorFrame("frame"))), "Hello, world!")
         val state = EditorState(initial)
         if (cropMode) state.edit { EditorReducer.transformSelectedFrameCrop(it, 2.0, 0.0, 0.0) }
         setContent {

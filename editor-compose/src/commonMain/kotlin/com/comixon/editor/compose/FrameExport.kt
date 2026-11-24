@@ -1,19 +1,20 @@
 package com.comixon.editor.compose
 
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import com.comixon.editor.rendering.FrameScene
-import com.comixon.editor.rendering.drawCoverImage
 import com.comixon.editor.rendering.drawEditorFrame
 import kotlin.io.encoding.Base64
+import kotlin.math.roundToInt
 
 /** Renders the artwork without selection handles, using exactly the canvas scene. */
 fun renderFrame(
@@ -64,28 +65,45 @@ expect fun encodeImage(
 fun generationImage(
     scene: FrameScene,
     speech: Boolean,
-): String = generationPayload(speech) { renderFrame(scene, it, drawLayers = false) }
+): String =
+    generationPayload(speech) { width, height ->
+        val frame = renderFrame(scene, width, drawLayers = false)
+        if (frame.height == height) frame else resizeGenerationImage(frame, width, height)
+    }
 
 /** Normalizes the second image used by the blending filter to the same server format. */
-fun generationImage(image: ImageBitmap): String =
-    generationPayload(speech = false) { width ->
-        val height = width * 4 / 3
-        val bitmap = ImageBitmap(width, height)
-        CanvasDrawScope().draw(Density(1f), LayoutDirection.Ltr, Canvas(bitmap), Size(width.toFloat(), height.toFloat())) {
-            drawCoverImage(image, Rect(Offset.Zero, size))
-        }
-        bitmap
+fun generationImage(
+    image: ImageBitmap,
+    speech: Boolean = false,
+): String = generationPayload(speech) { width, height -> resizeGenerationImage(image, width, height) }
+
+private fun resizeGenerationImage(
+    image: ImageBitmap,
+    width: Int,
+    height: Int,
+): ImageBitmap {
+    val bitmap = ImageBitmap(width, height)
+    CanvasDrawScope().draw(Density(1f), LayoutDirection.Ltr, Canvas(bitmap), Size(width.toFloat(), height.toFloat())) {
+        drawRect(Color.White)
+        drawImage(image, dstSize = IntSize(width, height))
     }
+    return bitmap
+}
 
 @OptIn(kotlin.io.encoding.ExperimentalEncodingApi::class)
 private fun generationPayload(
     speech: Boolean,
-    render: (Int) -> ImageBitmap,
+    render: (Int, Int) -> ImageBitmap,
 ): String {
     val initialWidth = if (speech) 768 else 1080
+    val initialHeight = if (speech) 1024 else 1440
     val maxBytes = if (speech) 180_000 else 400_000
     for (scale in listOf(1f, .85f, .7f, .6f, .5f)) {
-        val bitmap = render((initialWidth * scale).toInt().coerceAtLeast(360))
+        val bitmap =
+            render(
+                (initialWidth * scale).roundToInt().coerceAtLeast(480),
+                (initialHeight * scale).roundToInt().coerceAtLeast(480),
+            )
         for (quality in listOf(98, 96, 94, 92, 88, 84, 80, 74, 68)) {
             val bytes = encodeImage(bitmap, ImageEncoding.JPEG, quality)
             if (bytes.size <= maxBytes) {

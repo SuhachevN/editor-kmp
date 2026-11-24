@@ -33,7 +33,7 @@ class ComixonGenerationService(
             require(filter in AiFilters.names) { "Unknown AI filter" }
             require(imageDataUrl.startsWith("data:image/")) { "Expected an image data URL" }
             val payload = json.encodeToString(FilterRequest(imageDataUrl, backImage, filter))
-            json.decodeFromString<FilterResponse>(post("/v2/filter", payload, 120_000)).image.firstOrNull()
+            json.decodeFromString<FilterResponse>(post("/v2/filter", payload, 120_000, config.token())).image.firstOrNull()
                 ?: throw ProtocolFailure("The filter response contains no image")
         }
 
@@ -44,7 +44,8 @@ class ComixonGenerationService(
     ): GenerationResult<SpeechGeneration> =
         safely {
             require(imageDataUrl.startsWith("data:image/")) { "Expected an image data URL" }
-            val authenticated = !config.token().isNullOrBlank()
+            val token = config.token()
+            val authenticated = !token.isNullOrBlank()
             val request =
                 SpeechRequestDto(
                     image = imageDataUrl.takeIf { authenticated || firstGeneration || imageDescription.isNullOrBlank() },
@@ -53,20 +54,21 @@ class ComixonGenerationService(
                     imageDesc = imageDescription?.takeIf { !authenticated && !firstGeneration },
                 )
             val payload = json.encodeToString(request)
-            json.decodeFromString<SpeechResponseDto>(post("/v2/get_speech", payload, 300_000)).toGeneration()
+            json.decodeFromString<SpeechResponseDto>(post("/v2/get_speech", payload, 300_000, token)).toGeneration()
         }
 
     private suspend fun post(
         path: String,
         payload: String,
         timeoutMillis: Long,
+        token: String?,
     ): String {
         val response =
             client.post(config.baseUrl.trimEnd('/') + path) {
                 header("Accept", "application/json")
                 header("Content-Type", "application/json; charset=UTF-8")
                 header("Accept-Language", config.language)
-                config.token()?.takeIf { it.isNotBlank() }?.let { header("Token", it) }
+                token?.takeIf { it.isNotBlank() }?.let { header("Token", it) }
                 timeout { requestTimeoutMillis = timeoutMillis }
                 setBody(payload)
             }

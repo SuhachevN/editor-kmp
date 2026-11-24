@@ -5,7 +5,7 @@ import ComixonEditor
 struct ComixonEditorApp: App {
     var body: some Scene {
         WindowGroup {
-            EditorView().ignoresSafeArea()
+            EditorView().ignoresSafeArea().preferredColorScheme(.dark)
         }
     }
 }

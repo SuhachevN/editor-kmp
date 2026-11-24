@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,19 +16,13 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -36,8 +31,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.comixon.editor.compose.EditorCanvas
 import com.comixon.editor.compose.editorFontFamilies
@@ -46,97 +43,158 @@ import com.comixon.editor.compose.rememberFrameScene
 import com.comixon.editor.core.EditorBubbleLayer
 import com.comixon.editor.core.EditorReducer
 import com.comixon.editor.core.selectedFrame
+import com.comixon.editor.core.selectedLayer
 import com.comixon.editor.rendering.prepareFrameScene
 
 @Composable
-fun EditorApp() {
+fun EditorApp(startWithDemo: Boolean = false) {
     val scope = rememberCoroutineScope()
     val workspace = remember(scope) { EditorWorkspace(scope) }
+    DisposableEffect(workspace) { onDispose { workspace.close() } }
+    LaunchedEffect(startWithDemo) { if (startWithDemo) workspace.openDemo() }
+    EditorRoot(workspace)
+}
+
+@Composable
+internal fun EditorScreen(workspace: EditorWorkspace) {
+    val snackbar = remember { SnackbarHostState() }
+    val notice = workspace.notice
+    val noticeText = notice?.label?.text()
+    LaunchedEffect(notice) {
+        if (noticeText != null) {
+            snackbar.currentSnackbarData?.dismiss()
+            snackbar.showSnackbar(noticeText)
+        }
+    }
     val editor = workspace.editor
+    val session = remember(editor) { EditorSession(editor) }
+    val settings = remember { EditorServerSettings() }
     val families = editorFontFamilies()
     val measurer = rememberEditorTextMeasurer()
-    val scene = rememberFrameScene(editor, workspace.images, families, measurer)
-    var cropMode by remember { mutableStateOf(false) }
+    var showSettings by remember { mutableStateOf(false) }
+    var showLayers by remember { mutableStateOf(false) }
+    var showFiles by remember { mutableStateOf(false) }
+    LaunchedEffect(workspace.storyRevision) {
+        if (workspace.storyRevision > 0) session.selectTool(EditorTool.BUBBLE)
+    }
+    val originalScene = rememberFrameScene(session.canvasState, workspace.images, families, measurer)
+    val draft = session.textDraft
+    val scene =
+        remember(originalScene, draft, workspace.images, families, measurer) {
+            val frame =
+                if (draft != null) {
+                    EditorReducer.updateLayerText(editor.project, draft.layer.id, draft.text, draft.size, draft.font).selectedFrame
+                } else {
+                    null
+                }
+            if (frame != null) prepareFrameScene(frame, workspace.images, families, measurer) else originalScene
+        }
     val sources =
         editor.project.frames.flatMap { frame ->
-            listOfNotNull(frame.originalImageUrl) +
+            listOfNotNull(frame.originalImageUrl) + frame.generatedImageUrls +
                 frame.layers.filterIsInstance<EditorBubbleLayer>().mapNotNull { it.imageUrl }
         }
     LaunchedEffect(sources) { workspace.resolveImages(editor.project) }
-    DisposableEffect(workspace) { onDispose { workspace.close() } }
-
-    MaterialTheme(
-        colorScheme =
-            lightColorScheme(
-                primary = Color(0xFF245855),
-                secondary = Color(0xFFB85736),
-                surface = Color(0xFFFCFAF6),
-                background = Color(0xFFF1EEE7),
-            ),
-    ) {
+    val exportStrip: () -> Unit = {
+        workspace.exportStrip(editor.project.frames.map { prepareFrameScene(it, workspace.images, families, measurer) })
+    }
+    val fileActions =
+        listOf<Pair<EditorLabel, () -> Unit>>(
+            EditorLabel.NewProject to { workspace.importImage(newProject = true) },
+            EditorLabel.Open to { workspace.openProject() },
+            EditorLabel.Save to { workspace.saveProject() },
+            EditorLabel.Import to { workspace.importImage() },
+            EditorLabel.Export to { scene?.let(workspace::exportFrame) },
+            EditorLabel.ExportStrip to exportStrip,
+            EditorLabel.Layers to { showLayers = true },
+            EditorLabel.Settings to { showSettings = true },
+        )
+    EditorTheme {
         Surface(Modifier.fillMaxSize()) {
             Column(Modifier.windowInsetsPadding(WindowInsets.safeDrawing)) {
-                EditorHeader(workspace, onExport = { scene?.let(workspace::exportFrame) }, onExportStrip = {
-                    workspace.exportStrip(editor.project.frames.map { prepareFrameScene(it, workspace.images, families, measurer) })
-                })
-                HorizontalDivider()
-                LazyRow(Modifier.fillMaxWidth().padding(horizontal = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    itemsIndexed(editor.project.frames, key = { _, frame -> frame.id }) { index, frame ->
-                        FilterChip(
-                            selected = frame.id == editor.project.selectedFrameId,
-                            onClick = { editor.select { EditorReducer.selectFrame(it, frame.id) } },
-                            label = { Text("Frame " + (index + 1)) },
-                        )
-                    }
-                    item { TextButton(onClick = { editor.edit { EditorReducer.addFrame(it) } }) { Text("+ Frame") } }
-                }
-                BoxWithConstraints(Modifier.weight(1f)) {
+                EditorTopBar(
+                    workspace,
+                    session.isContextual,
+                    labeled = session.isPicker || session.textDraft != null,
+                    onBack = {
+                        if (workspace.isGenerating) {
+                            workspace.cancelGeneration()
+                        } else if (!session.finishEditing(false)) {
+                            showFiles = true
+                        }
+                    },
+                    onDone = { if (!session.finishEditing(true)) exportStrip() },
+                    fileActions = fileActions,
+                )
+                BoxWithConstraints(Modifier.weight(1f).clipToBounds()) {
                     val wide = maxWidth >= 900.dp
+                    val selected = editor.project.selectedLayer
+                    val contextual = draft != null || session.isPicker || session.cropDraft != null
+                    val panelHeight =
+                        when {
+                            draft != null -> 340.dp
+                            session.isPicker ->
+                                (if (session.expanded) maxHeight - 120.dp else 420.dp)
+                                    .coerceAtLeast(280.dp)
+                                    .coerceAtMost((maxHeight - 40.dp).coerceAtLeast(120.dp))
+                            session.cropDraft != null -> 290.dp
+                            selected != null -> 100.dp
+                            else -> 210.dp
+                        }
                     if (wide) {
                         Row(Modifier.fillMaxSize()) {
-                            Box(
-                                Modifier
-                                    .weight(1f)
-                                    .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .padding(24.dp),
-                            ) {
-                                EditorCanvas(editor, scene, Modifier.fillMaxSize(), cropMode)
-                            }
-                            EditorTools(workspace, scene, cropMode, { cropMode = it }, Modifier.width(340.dp).fillMaxSize())
+                            EditorCanvas(
+                                session.canvasState,
+                                scene,
+                                Modifier.weight(1f).fillMaxHeight().padding(24.dp),
+                                session.cropDraft != null,
+                            )
+                            EditorPanel(session, workspace, scene, settings, true, Modifier.width(380.dp).fillMaxHeight())
                         }
                     } else {
-                        Column(Modifier.fillMaxSize()) {
-                            Box(
-                                Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .padding(12.dp),
-                            ) {
-                                EditorCanvas(editor, scene, Modifier.fillMaxSize(), cropMode)
-                            }
-                            EditorTools(workspace, scene, cropMode, { cropMode = it }, Modifier.fillMaxWidth().height(280.dp))
-                        }
+                        EditorCanvas(
+                            session.canvasState,
+                            scene,
+                            Modifier.fillMaxSize().padding(bottom = if (contextual) 0.dp else panelHeight).clipToBounds(),
+                            cropMode = session.cropDraft != null,
+                            alignCanvasTop = contextual || selected != null,
+                            preserveCanvasWidth = contextual,
+                        )
+                        EditorPanel(
+                            session,
+                            workspace,
+                            scene,
+                            settings,
+                            false,
+                            Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(panelHeight),
+                        )
                     }
-                }
-                if (workspace.isGenerating) {
-                    Row(
-                        Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        CircularProgressIndicator(Modifier.size(20.dp))
-                        Text(workspace.generationLabel, Modifier.weight(1f))
-                        TextButton(onClick = workspace::cancelGeneration) { Text("Cancel") }
-                    }
+                    if (workspace.isGenerating) GenerationOverlay(workspace)
+                    SnackbarHost(
+                        snackbar,
+                        Modifier.align(Alignment.BottomCenter).testTag("editor_generation_notice").padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom =
+                                if (wide) {
+                                    24.dp
+                                } else {
+                                    panelHeight +
+                                        12.dp
+                                },
+                        ),
+                    )
                 }
             }
+            if (showSettings) ServerSettingsDialog(settings) { showSettings = false }
+            if (showLayers) LayerList(workspace) { showLayers = false }
+            if (showFiles) ProjectActionsDialog(fileActions) { showFiles = false }
             workspace.message?.let { message ->
                 AlertDialog(
                     onDismissRequest = { workspace.message = null },
                     title = { Text("Comixon Editor") },
                     text = { Text(message) },
-                    confirmButton = { TextButton(onClick = { workspace.message = null }) { Text("OK") } },
+                    confirmButton = { TextButton({ workspace.message = null }) { Text(EditorLabel.Done.text()) } },
                 )
             }
         }
@@ -144,24 +202,34 @@ fun EditorApp() {
 }
 
 @Composable
-private fun EditorHeader(
-    workspace: EditorWorkspace,
-    onExport: () -> Unit,
-    onExportStrip: () -> Unit,
-) {
-    val state = workspace.editor
-    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("COMIXON / EDITOR", Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
-            TextButton(onClick = state::undo, enabled = state.canUndo) { Text("Undo") }
-            TextButton(onClick = state::redo, enabled = state.canRedo) { Text("Redo") }
-        }
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            item { OutlinedButton(onClick = { workspace.openProject() }) { Text("Open") } }
-            item { OutlinedButton(onClick = { workspace.saveProject() }) { Text("Save project") } }
-            item { OutlinedButton(onClick = { workspace.importImage() }) { Text("Import image") } }
-            item { Button(onClick = onExport, enabled = state.project.selectedFrame != null) { Text("Export PNG") } }
-            item { OutlinedButton(onClick = onExportStrip, enabled = state.project.frames.isNotEmpty()) { Text("Export strip") } }
+private fun GenerationOverlay(workspace: EditorWorkspace) {
+    Box(Modifier.fillMaxSize().background(EditorColors.Background.copy(alpha = .6f)), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            CircularProgressIndicator(Modifier.size(54.dp), color = EditorColors.Content)
+            Text(workspace.generationLabel)
+            TextButton(workspace::cancelGeneration) { Text(EditorLabel.Cancel.text()) }
         }
     }
+}
+
+@Composable
+private fun ProjectActionsDialog(
+    actions: List<Pair<EditorLabel, () -> Unit>>,
+    onClose: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onClose,
+        title = { Text("Comixon Editor") },
+        text = {
+            Column {
+                actions.forEach { (label, action) ->
+                    TextButton({
+                        onClose()
+                        action()
+                    }) { Text(label.text()) }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClose) { Text(EditorLabel.Cancel.text()) } },
+    )
 }

@@ -10,7 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.comixon.editor.compose.encodeImage
@@ -31,6 +33,7 @@ class EditorPreviewTest {
                 Box(Modifier.size(if (phone) 400.dp else 1000.dp, 700.dp)) { EditorApp() }
             }
         }
+        rule.onNodeWithTag("editor_open_demo").performClick()
         rule.waitForIdle()
         saveScreenshot("desktop")
         rule.runOnIdle { phone = true }

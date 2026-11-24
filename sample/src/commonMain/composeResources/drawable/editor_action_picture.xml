@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vector geometry from Comixon iOS: Bubble Picture.pdf -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="28dp" android:height="28dp" android:viewportWidth="28.0" android:viewportHeight="28.0">
+<group>
+</group>
+<group>
+<clip-path android:pathData="M3.20300,16.45647 L10.64755,8.00000 L16.98248,15.19601 L20.23360,11.87226 C20.61979,11.47744 21.25291,11.47045 21.64773,11.85664 C21.65299,11.86179 21.65820,11.86699 21.66335,11.87226 L25.25380,15.54291 C23.89099,18.76785 20.51991,21.00000 14.00000,21.00000 C8.11558,21.00000 4.79608,19.18178 3.20300,16.45647 Z" android:fillType="evenOdd"/>
+<clip-path android:pathData="M0.00000,28.00000 L28.00000,28.00000 L28.00000,0.00000 L0.00000,0.00000 Z" android:fillType="nonZero"/>
+<group>
+<group>
+</group>
+<group>
+<clip-path android:pathData="M3.00000,21.00000 L26.00000,21.00000 L26.00000,8.00000 L3.00000,8.00000 Z" android:fillType="nonZero"/>
+<path android:pathData="M-6.79701,-2.00000 L35.25380,-2.00000 L35.25380,31.00000 L-6.79701,31.00000 Z" android:fillColor="#FFFFFFFF" android:fillType="nonZero"/>
+</group>
+</group>
+</group>
+<group>
+<clip-path android:pathData="M17.50000,11.00000 C18.88071,11.00000 20.00000,9.88071 20.00000,8.50000 C20.00000,7.11929 18.88071,6.00000 17.50000,6.00000 C16.11929,6.00000 15.00000,7.11929 15.00000,8.50000 C15.00000,9.88071 16.11929,11.00000 17.50000,11.00000 Z" android:fillType="evenOdd"/>
+<clip-path android:pathData="M0.00000,28.00000 L28.00000,28.00000 L28.00000,0.00000 L0.00000,0.00000 Z" android:fillType="nonZero"/>
+<group>
+<group>
+</group>
+<group>
+<clip-path android:pathData="M15.00000,11.00000 L20.00000,11.00000 L20.00000,6.00000 L15.00000,6.00000 Z" android:fillType="nonZero"/>
+<path android:pathData="M5.00000,-4.00000 L30.00000,-4.00000 L30.00000,21.00000 L5.00000,21.00000 Z" android:fillColor="#FFFFFFFF" android:fillType="nonZero"/>
+</group>
+</group>
+</group>
+<group>
+<clip-path android:pathData="M14.00000,21.00000 C5.00000,21.00000 2.00000,16.74671 2.00000,11.50000 C2.00000,6.25329 5.00000,2.00000 14.00000,2.00000 C23.00000,2.00000 26.00000,6.25329 26.00000,11.50000 C26.00000,16.74671 23.00000,21.00000 14.00000,21.00000 Z" android:fillType="evenOdd"/>
+<clip-path android:pathData="M0.00000,28.00000 L28.00000,28.00000 L28.00000,0.00000 L0.00000,0.00000 Z" android:fillType="nonZero"/>
+<group>
+<group>
+</group>
+<group>
+<clip-path android:pathData="M2.00000,21.00000 L26.00000,21.00000 L26.00000,2.00000 L2.00000,2.00000 Z" android:fillType="nonZero"/>
+<group>
+<path android:pathData="M14.00000,21.00000 C5.00000,21.00000 2.00000,16.74671 2.00000,11.50000 C2.00000,6.25330 5.00000,2.00000 14.00000,2.00000 C23.00000,2.00000 26.00000,6.25330 26.00000,11.50000 C26.00000,16.74671 23.00000,21.00000 14.00000,21.00000 Z" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF" android:strokeWidth="4.00000" android:strokeLineCap="butt" android:strokeLineJoin="miter"/>
+</group>
+</group>
+</group>
+</group>
+<group>
+<clip-path android:pathData="M10.00000,19.00000 L14.00000,25.00000 L18.00000,19.00000 L10.00000,19.00000 Z" android:fillType="evenOdd"/>
+<clip-path android:pathData="M0.00000,28.00000 L28.00000,28.00000 L28.00000,0.00000 L0.00000,0.00000 Z" android:fillType="nonZero"/>
+<group>
+<group>
+</group>
+<group>
+<clip-path android:pathData="M10.00000,25.00000 L18.00000,25.00000 L18.00000,19.00000 L10.00000,19.00000 Z" android:fillType="nonZero"/>
+<path android:pathData="M0.00000,9.00000 L28.00000,9.00000 L28.00000,35.00000 L0.00000,35.00000 Z" android:fillColor="#FFFFFFFF" android:fillType="nonZero"/>
+</group>
+</group>
+</group>
+<group>
+<clip-path android:pathData="M0.00000,28.00000 L28.00000,28.00000 L28.00000,0.00000 L0.00000,0.00000 Z" android:fillType="nonZero"/>
+<group>
+<path android:pathData="M10.00000,19.00000 L14.00000,25.00000 L18.00000,19.00000" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF" android:strokeWidth="2.00000" android:strokeLineCap="round" android:strokeLineJoin="round"/>
+</group>
+</group>
+</vector>

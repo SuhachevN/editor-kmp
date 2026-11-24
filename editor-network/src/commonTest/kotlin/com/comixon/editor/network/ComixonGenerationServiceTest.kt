@@ -24,6 +24,38 @@ class ComixonGenerationServiceTest {
     private val jsonHeaders = headersOf("Content-Type", "application/json")
     private val image = "data:image/jpeg;base64,dGVzdA=="
 
+    @Test fun speechResolvesCredentialsOncePerRequest() =
+        runTest {
+            var calls = 0
+            val engine =
+                MockEngine { request ->
+                    assertEquals("first-token", request.headers["Token"])
+                    val body = Json.decodeFromString<JsonObject>(request.body.toByteArray().decodeToString())
+                    assertEquals(image, body["image"]?.jsonPrimitive?.content)
+                    assertFalse("image_desc" in body)
+                    respond("""{"speech":[[{"text":"Hello"}]]}""", headers = jsonHeaders)
+                }
+            val client = HttpClient(engine) { install(HttpTimeout) }
+            try {
+                val config =
+                    ServerConfig(token = {
+                        calls++
+                        if (calls == 1) "first-token" else null
+                    })
+                assertIs<GenerationResult.Success<*>>(ComixonGenerationService(client, config).speech(image, false, "A street"))
+                assertEquals(1, calls)
+            } finally {
+                client.close()
+            }
+        }
+
+    @Test fun serverConfigurationRejectsInvalidBaseUrls() {
+        for (url in listOf("http://example.test", "https://", "https://example.test?token=private", "https://example.test#fragment")) {
+            assertFailsWith<IllegalArgumentException> { ServerConfig(url) }
+        }
+        assertEquals("https://example.test/api", ServerConfig("https://example.test/api").baseUrl)
+    }
+
     @Test fun filtersUseTheDirectEndpointAndExactWireKeys() =
         runTest {
             val engine =

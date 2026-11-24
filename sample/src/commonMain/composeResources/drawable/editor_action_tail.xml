@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vector geometry from Comixon iOS: Bubble Tile Hide.pdf -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="28dp" android:height="28dp" android:viewportWidth="28.0" android:viewportHeight="28.0">
+<group>
+</group>
+<group>
+<clip-path android:pathData="M9.00000,10.00000 L19.00000,10.00000 C19.55228,10.00000 20.00000,10.44772 20.00000,11.00000 L20.00000,11.00000 C20.00000,11.55228 19.55228,12.00000 19.00000,12.00000 L9.00000,12.00000 C8.44772,12.00000 8.00000,11.55228 8.00000,11.00000 L8.00000,11.00000 C8.00000,10.44772 8.44772,10.00000 9.00000,10.00000 Z" android:fillType="evenOdd"/>
+<clip-path android:pathData="M0.00000,28.00000 L28.00000,28.00000 L28.00000,0.00000 L0.00000,0.00000 Z" android:fillType="nonZero"/>
+<group>
+<group>
+</group>
+<group>
+<clip-path android:pathData="M8.00000,12.00000 L20.00000,12.00000 L20.00000,10.00000 L8.00000,10.00000 Z" android:fillType="nonZero"/>
+<path android:pathData="M-2.00000,0.00000 L30.00000,0.00000 L30.00000,22.00000 L-2.00000,22.00000 Z" android:fillColor="#FFFFFFFF" android:fillType="nonZero"/>
+</group>
+</group>
+</group>
+<group>
+<clip-path android:pathData="M21.00949,19.66045 C24.00000,19.00000 26.00000,15.35191 26.00000,11.50000 C26.00000,5.18446 22.07462,2.00000 14.00000,2.00000 C5.92538,2.00000 2.00000,5.18446 2.00000,11.50000 C2.00000,15.39668 4.00000,19.00000 7.00000,19.66045 L7.04646,17.61451 C4.97032,16.42933 4.00000,14.45767 4.00000,11.50000 C4.00000,6.39203 6.94858,4.00000 14.00000,4.00000 C21.05142,4.00000 24.00000,6.39203 24.00000,11.50000 C24.00000,14.43219 23.04604,16.39433 21.00949,17.58224 L21.00949,19.66045 Z" android:fillType="evenOdd"/>
+<clip-path android:pathData="M0.00000,28.00000 L28.00000,28.00000 L28.00000,0.00000 L0.00000,0.00000 Z" android:fillType="nonZero"/>
+<group>
+<group>
+</group>
+<group>
+<clip-path android:pathData="M2.00000,20.00000 L26.00000,20.00000 L26.00000,2.00000 L2.00000,2.00000 Z" android:fillType="nonZero"/>
+<path android:pathData="M-8.00000,-8.00000 L36.00000,-8.00000 L36.00000,29.66045 L-8.00000,29.66045 Z" android:fillColor="#FFFFFFFF" android:fillType="nonZero"/>
+</group>
+</group>
+</group>
+<group>
+<clip-path android:pathData="M10.83205,18.44530 C10.52570,17.98577 9.90483,17.86160 9.44530,18.16795 C8.98577,18.47430 8.86160,19.09517 9.16795,19.55470 L13.16795,25.55470 C13.56377,26.14843 14.43623,26.14843 14.83205,25.55470 L18.83205,19.55470 C19.13840,19.09517 19.01423,18.47430 18.55470,18.16795 C18.09517,17.86160 17.47430,17.98577 17.16795,18.44530 L14.00000,23.19722 L10.83205,18.44530 Z" android:fillType="evenOdd"/>
+<clip-path android:pathData="M0.00000,28.00000 L28.00000,28.00000 L28.00000,0.00000 L0.00000,0.00000 Z" android:fillType="nonZero"/>
+<group>
+<group>
+</group>
+<group>
+<clip-path android:pathData="M8.00000,27.00000 L20.00000,27.00000 L20.00000,17.00000 L8.00000,17.00000 Z" android:fillType="nonZero"/>
+<path android:pathData="M-1.00011,7.99989 L29.00011,7.99989 L29.00011,36.00000 L-1.00011,36.00000 Z" android:fillColor="#FFFFFFFF" android:fillType="nonZero"/>
+</group>
+</group>
+</group>
+</vector>
