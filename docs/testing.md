@@ -40,4 +40,12 @@ Live check on 2026-11-24 before enabling the no-token Start generation guard, An
 
 ## iOS
 
-Deferred by project scope. Source and host remain in the repository, but iOS is not an installation or acceptance target for this iteration. The optional ios workflow input is reserved for later work.
+Download **ios-unsigned** from the successful workflow and unzip comixon-editor-unsigned.ipa. This is an ARM64 iPhone/iPad build for iOS 15+. It is not signed and cannot be installed directly from GitHub.
+
+Without a Mac, use [Sideloadly](https://sideloadly.io/) on Windows, following its current installation requirements. Connect and trust the iPhone over USB, select the IPA and sign it with your own Apple ID in Sideloadly. On iOS 16+, enable Developer Mode when required; trust the developer profile in Settings if prompted. A free account's signature expires after seven days, so the app needs to be signed again. See the [official FAQ](https://sideloadly.io/faq) for limits and renewal. Apple credentials and signing certificates are never needed by this repository or its workflows.
+
+With a Mac, install Xcode and XcodeGen, run `xcodegen generate --spec iosApp/project.yml`, then open iosApp/ComixonEditor.xcodeproj. Select the ComixonEditor scheme and an Apple Silicon iOS Simulator. For a physical device choose your own development team under Signing & Capabilities. The host uses direct Kotlin framework integration, without CocoaPods. Intel iOS Simulator is not a configured target.
+
+CI runs shared Kotlin tests and an XCTest welcome → demo → anonymous-generation check on iPhone Simulator. The ios-test-reports artifact includes the XCTest result bundle and screenshot. This does not prove recording quality, real-device photo selection or installation/signing: check those on an iPhone using the manual checklist above.
+
+iOS dictation uses Apple Speech and AVAudioEngine. It requests speech and microphone access only when dictation starts, replaces partial transcripts in the current selection, and cancels when the editor closes or the app enters the background. Recognition availability and internet requirements depend on the device and language; audio is not sent to Comixon.

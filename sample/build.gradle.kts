@@ -126,3 +126,18 @@ compose.resources { packageOfResClass = "com.comixon.editor.sample.resources" }
 tasks.matching { it.name in setOf("prepareAppResources", "run") }.configureEach {
     dependsOn(compileMacSpeech)
 }
+
+if (System.getProperty("os.name").startsWith("Mac")) {
+    val packagedSpeech =
+        layout.buildDirectory.file(
+            "compose/binaries/main/app/ComixonEditor.app/Contents/app/resources/comixon-speech",
+        )
+    tasks.matching { it.name == "createDistributable" }.configureEach {
+        doLast {
+            val helper = packagedSpeech.get().asFile
+            check(helper.isFile && helper.setExecutable(true, false)) {
+                "Packaged speech helper is missing or cannot be made executable: $helper"
+            }
+        }
+    }
+}

@@ -6,6 +6,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.0"
+    ARCHS: arm64
     GENERATE_INFOPLIST_FILE: YES
     ENABLE_USER_SCRIPT_SANDBOXING: NO
     FRAMEWORK_SEARCH_PATHS: "$(inherited) $(SRCROOT)/../sample/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
@@ -19,6 +20,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.comixon.editor.sample
         INFOPLIST_KEY_CFBundleDisplayName: Comixon Editor
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: Dictate text into a comic bubble or lettering.
+        INFOPLIST_KEY_NSSpeechRecognitionUsageDescription: Convert your voice into editor text using Apple speech recognition.
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
     preBuildScripts:
@@ -27,6 +30,15 @@ targets:
           cd "$SRCROOT/.."
           ./gradlew :sample:embedAndSignAppleFrameworkForXcode
         basedOnDependencyAnalysis: false
+  ComixonEditorUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [Tests]
+    dependencies:
+      - target: ComixonEditorApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.comixon.editor.uitests
 schemes:
   ComixonEditor:
     build:
@@ -34,3 +46,6 @@ schemes:
         ComixonEditorApp: all
     run:
       config: Debug
+    test:
+      config: Debug
+      targets: [ComixonEditorUITests]
