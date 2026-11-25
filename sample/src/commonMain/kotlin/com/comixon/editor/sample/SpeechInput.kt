@@ -24,7 +24,7 @@ internal expect fun rememberSpeechInput(
     onError: (SpeechInputError) -> Unit,
 ): SpeechInput
 
-/** Each partial result replaces the original selection, rather than appending itself. */
+/** Replaces the original selection on every partial result to avoid duplicating transcripts. */
 internal fun insertDictation(
     source: TextFieldValue,
     transcript: String,

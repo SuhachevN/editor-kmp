@@ -32,7 +32,11 @@ class ProjectCodecTest {
 
     @Test fun futureVersionsAndMalformedFilesAreRejected() {
         val source = ProjectCodec.encode(EditorProject())
-        assertFailsWith<IllegalArgumentException> { ProjectCodec.decode(source.replace("\"version\":1", "\"version\":2")) }
+        assertFailsWith<IllegalArgumentException> {
+            ProjectCodec.decode(
+                source.replace("\"version\":1", "\"version\":2"),
+            )
+        }
         assertFailsWith<IllegalArgumentException> { ProjectCodec.decode("not json") }
     }
 
@@ -40,7 +44,10 @@ class ProjectCodecTest {
         val project = EditorReducer.addDefaultBubble(EditorProject(listOf(EditorFrame("frame"))), "Test")
         val frame = project.frames.single()
         val bubble = frame.layers.single() as EditorBubbleLayer
-        val invalid = project.copy(frames = listOf(frame.copy(layers = listOf(bubble.copy(bounds = bubble.bounds.copy(width = 2000.0))))))
+        val invalid =
+            project.copy(
+                frames = listOf(frame.copy(layers = listOf(bubble.copy(bounds = bubble.bounds.copy(width = 2000.0))))),
+            )
         assertFailsWith<IllegalArgumentException> { ProjectCodec.decode(ProjectCodec.encode(invalid)) }
         val duplicate = project.copy(frames = listOf(frame, frame))
         assertFailsWith<IllegalArgumentException> { ProjectCodec.decode(ProjectCodec.encode(duplicate)) }

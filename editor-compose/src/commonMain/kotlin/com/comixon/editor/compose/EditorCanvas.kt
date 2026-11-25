@@ -35,6 +35,7 @@ import com.comixon.editor.core.EditorFont
 import com.comixon.editor.core.EditorLayer
 import com.comixon.editor.core.EditorReducer
 import com.comixon.editor.core.selectedFrame
+import com.comixon.editor.core.selectedLayer
 import com.comixon.editor.rendering.BubbleTailEditing
 import com.comixon.editor.rendering.FrameScene
 import com.comixon.editor.rendering.drawEditorFrame
@@ -57,10 +58,15 @@ fun rememberFrameScene(
     measurer: TextMeasurer,
 ): FrameScene? {
     val frame = state.project.selectedFrame
-    return remember(frame, images, families, measurer) { frame?.let { prepareFrameScene(it, images, families, measurer) } }
+    return remember(
+        frame,
+        images,
+        families,
+        measurer,
+    ) { frame?.let { prepareFrameScene(it, images, families, measurer) } }
 }
 
-/** Coordinates and text stay in a 1080 × 1440 document, independent of display density. */
+/** Canvas coordinates use document pixels (1080 × 1440), independent of display density. */
 @Composable
 fun EditorCanvas(
     state: EditorState,
@@ -131,7 +137,10 @@ fun EditorCanvas(
                                 val tail = selected as? EditorBubbleLayer
                                 val corner =
                                     selected?.let { layer ->
-                                        resizeCorners(layer).firstOrNull { (p - it.position(layer.hitBounds())).getDistance() <= radius }
+                                        resizeCorners(layer).firstOrNull {
+                                            (p - it.position(layer.hitBounds())).getDistance() <=
+                                                radius
+                                        }
                                     }
                                 mode =
                                     when {
@@ -142,7 +151,14 @@ fun EditorCanvas(
                                         else -> DragMode.MOVE
                                     }
                                 if (corner != null) resizeCorner = corner
-                                val hit = if (mode == DragMode.MOVE) layers.lastOrNull { it.hitBounds().contains(p) } else selected
+                                val hit =
+                                    if (mode ==
+                                        DragMode.MOVE
+                                    ) {
+                                        layers.lastOrNull { it.hitBounds().contains(p) }
+                                    } else {
+                                        selected
+                                    }
                                 active = hit?.id
                                 state.select { EditorReducer.selectLayer(it, active) }
                                 if (active != null) state.beginGesture()
@@ -184,7 +200,7 @@ fun EditorCanvas(
             scale(ratio, ratio, Offset.Zero) {
                 scene?.let { drawEditorFrame(it) }
                 if (!cropMode) {
-                    state.project.selectedFrame?.layers?.firstOrNull { it.id == state.project.selectedLayerId }?.let { layer ->
+                    state.project.selectedLayer?.let { layer ->
                         val rect = layer.hitBounds()
                         val color = Color(0xFFFF3B30)
                         drawRect(color, rect.topLeft, rect.size, style = Stroke(1.5.dp.toPx() / ratio))
@@ -207,8 +223,18 @@ fun EditorCanvas(
                 if (cropMode) {
                     repeat(2) { index ->
                         val part = (index + 1) / 3f
-                        drawLine(Color.White.copy(alpha = .7f), Offset(1080f * part, 0f), Offset(1080f * part, 1440f), 1.dp.toPx() / ratio)
-                        drawLine(Color.White.copy(alpha = .7f), Offset(0f, 1440f * part), Offset(1080f, 1440f * part), 1.dp.toPx() / ratio)
+                        drawLine(
+                            Color.White.copy(alpha = .7f),
+                            Offset(1080f * part, 0f),
+                            Offset(1080f * part, 1440f),
+                            1.dp.toPx() / ratio,
+                        )
+                        drawLine(
+                            Color.White.copy(alpha = .7f),
+                            Offset(0f, 1440f * part),
+                            Offset(1080f, 1440f * part),
+                            1.dp.toPx() / ratio,
+                        )
                     }
                 }
             }

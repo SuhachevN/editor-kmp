@@ -2,7 +2,6 @@ import AVFoundation
 import ComixonEditor
 import Speech
 
-/// Keeps microphone buffers on the native side; only transcripts cross into Kotlin.
 final class AppleSpeechInput: NSObject, IosSpeechInput {
     private let recognizer = SFSpeechRecognizer(locale: .current)
     private var engine: AVAudioEngine?

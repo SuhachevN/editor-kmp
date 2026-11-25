@@ -84,7 +84,11 @@ class FrameExportTest {
             val image = fixture()
             val first = EditorFrame("first", originalImageUrl = "fixture")
             val second = first.copy(id = "second", crop = EditorCropState(isFlippedHorizontally = true))
-            val scenes = listOf(first, second).map { prepareFrameScene(it, mapOf("fixture" to image), emptyMap(), measurer) }
+            val scenes =
+                listOf(
+                    first,
+                    second,
+                ).map { prepareFrameScene(it, mapOf("fixture" to image), emptyMap(), measurer) }
             val strip = renderStrip(scenes, width = 96)
             assertEquals(96, strip.width)
             assertEquals(256, strip.height)

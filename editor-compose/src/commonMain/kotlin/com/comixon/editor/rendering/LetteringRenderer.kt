@@ -31,11 +31,7 @@ internal fun prepareLettering(
     val textStyle =
         TextStyle(
             fontFamily = family,
-            fontSize =
-                (
-                    (22f + layer.fontSizeName.ordinal * 8f) *
-                        BubbleReferenceMetrics.POINT_TO_EXPORT
-                ).sp,
+            fontSize = ((22f + layer.fontSizeName.ordinal * 8f) * BubbleReferenceMetrics.POINT_TO_EXPORT).sp,
             fontWeight = layer.font.weight,
             fontStyle = layer.font.style,
         )

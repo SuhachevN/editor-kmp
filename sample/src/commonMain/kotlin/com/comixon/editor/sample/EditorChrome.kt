@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -160,7 +161,12 @@ internal fun RoundEditorButton(
             .clip(RoundedCornerShape(12.dp))
             .background(if (accent) EditorColors.Accent else EditorColors.Control),
     ) {
-        Icon(icon, label.text(), Modifier.size(21.dp), tint = if (accent) EditorColors.Background else EditorColors.Content)
+        Icon(
+            icon,
+            label.text(),
+            Modifier.size(21.dp),
+            tint = if (accent) EditorColors.Background else EditorColors.Content,
+        )
     }
 }
 
@@ -197,8 +203,7 @@ internal fun EditorFrameStrip(workspace: EditorWorkspace) {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
         contentPadding =
-            androidx.compose.foundation.layout
-                .PaddingValues(horizontal = 20.dp),
+            PaddingValues(horizontal = 20.dp),
     ) {
         itemsIndexed(state.project.frames, key = { _, frame -> frame.id }) { index, frame ->
             val selected = frame.id == state.project.selectedFrameId
@@ -211,15 +216,21 @@ internal fun EditorFrameStrip(workspace: EditorWorkspace) {
                         if (selected) 2.dp else 1.dp,
                         if (selected) EditorColors.Accent else EditorColors.Divider,
                         RoundedCornerShape(8.dp),
-                    ).selectable(selected, role = Role.Tab, onClick = { state.select { EditorReducer.selectFrame(it, frame.id) } })
-                    .testTag("editor_frame_" + index),
+                    ).selectable(
+                        selected,
+                        role = Role.Tab,
+                        onClick = { state.select { EditorReducer.selectFrame(it, frame.id) } },
+                    ).testTag("editor_frame_" + index),
                 contentAlignment = Alignment.Center,
             ) {
                 val image = workspace.images[frame.originalImageUrl]
-                if (image !=
-                    null
-                ) {
-                    Image(image, toolFrameDescription(index), Modifier.fillMaxSize().padding(2.dp), contentScale = ContentScale.Crop)
+                if (image != null) {
+                    Image(
+                        image,
+                        toolFrameDescription(index),
+                        Modifier.fillMaxSize().padding(2.dp),
+                        contentScale = ContentScale.Crop,
+                    )
                 } else {
                     Text((index + 1).toString(), color = EditorColors.Muted)
                 }
@@ -234,5 +245,10 @@ private fun toolFrameDescription(index: Int): String = EditorLabel.Frames.text()
 
 @Composable
 internal fun EditorSectionTitle(label: EditorLabel) {
-    Text(label.text(), Modifier.padding(horizontal = 20.dp, vertical = 8.dp), fontSize = 17.sp, fontWeight = FontWeight.Medium)
+    Text(
+        label.text(),
+        Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+        fontSize = 17.sp,
+        fontWeight = FontWeight.Medium,
+    )
 }

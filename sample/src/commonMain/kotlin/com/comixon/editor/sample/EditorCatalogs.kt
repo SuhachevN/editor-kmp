@@ -55,7 +55,11 @@ internal fun BubbleCatalog(
                     ) { BubbleStylePreview(style, Modifier.size(76.dp, 72.dp)) }
                 }
             }
-            HorizontalDivider(Modifier.padding(start = 20.dp), color = EditorColors.Divider.copy(alpha = .65f), thickness = .5.dp)
+            HorizontalDivider(
+                Modifier.padding(start = 20.dp),
+                color = EditorColors.Divider.copy(alpha = .65f),
+                thickness = .5.dp,
+            )
         }
     }
 }

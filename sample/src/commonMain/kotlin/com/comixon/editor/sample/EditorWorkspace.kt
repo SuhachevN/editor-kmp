@@ -53,7 +53,10 @@ internal data class EditorNotice(
 internal class EditorWorkspace(
     private val scope: CoroutineScope,
     private val mediaPicker: suspend (Boolean) -> List<ImportedEditorImage>? = ::pickEditorImages,
-    private val serviceFactory: (io.ktor.client.HttpClient, ServerConfig) -> EditorGenerationService = ::ComixonGenerationService,
+    private val serviceFactory: (
+        io.ktor.client.HttpClient,
+        ServerConfig,
+    ) -> EditorGenerationService = ::ComixonGenerationService,
 ) {
     var isEditorOpen by mutableStateOf(false)
         private set
@@ -135,7 +138,9 @@ internal class EditorWorkspace(
                     speechStates.clear()
                     editor.replace(EditorReducer.selectFrame(project, project.frames.first().id))
                 } else {
-                    editor.edit { document -> picked.fold(document) { project, photo -> EditorReducer.addFrame(project, photo.source) } }
+                    editor.edit { document ->
+                        picked.fold(document) { project, photo -> EditorReducer.addFrame(project, photo.source) }
+                    }
                 }
                 images = images + imported
                 isEditorOpen = true
@@ -193,7 +198,14 @@ internal class EditorWorkspace(
                         notice = EditorNotice(EditorLabel.AuthorizationRequired, (notice?.sequence ?: 0) + 1)
                         return@launch
                     }
-                    val requestSettings = if (filter == null) ServerConfig(settings.baseUrl, settings.language) { token } else settings
+                    val requestSettings =
+                        if (filter ==
+                            null
+                        ) {
+                            ServerConfig(settings.baseUrl, settings.language) { token }
+                        } else {
+                            settings
+                        }
                     val service = serviceFactory(client, requestSettings)
                     if (filter == null) {
                         generateStory(frame, scene, service)
@@ -225,7 +237,10 @@ internal class EditorWorkspace(
                 val image = withContext(Dispatchers.Default) { loadImage(client, result.value) }
                 coroutineContext.ensureActive()
                 images = images + (result.value to image)
-                applyToFrame(frame.id, frame.originalImageUrl) { EditorReducer.recordGeneratedImageForSelectedFrame(it, result.value) }
+                applyToFrame(
+                    frame.id,
+                    frame.originalImageUrl,
+                ) { EditorReducer.recordGeneratedImageForSelectedFrame(it, result.value) }
             }
             is GenerationResult.Failure -> message = result.message
         }
@@ -245,7 +260,9 @@ internal class EditorWorkspace(
             }
         val result =
             withTimeout(310_000) {
-                StoryGenerationService(service).generate(filterPayload, speechPayload, previous == null, previous?.imageDesc)
+                StoryGenerationService(
+                    service,
+                ).generate(filterPayload, speechPayload, previous == null, previous?.imageDesc)
             }
         val generation = (result.speech as? GenerationResult.Success)?.value
         var imageUrl = (result.image as? GenerationResult.Success)?.value
@@ -287,7 +304,9 @@ internal class EditorWorkspace(
             when {
                 result.speech is GenerationResult.Failure -> (result.speech as GenerationResult.Failure).message
                 suggestions.isEmpty() -> "The server returned no dialogue."
-                imageUrl == null -> (result.image as? GenerationResult.Failure)?.message ?: "The generated image could not be loaded."
+                imageUrl == null ->
+                    (result.image as? GenerationResult.Failure)?.message
+                        ?: "The generated image could not be loaded."
                 else -> null
             }
     }
@@ -331,7 +350,14 @@ internal class EditorWorkspace(
         editor.edit { project ->
             project.copy(
                 frames = project.frames.map { if (it.id == id) updated else it },
-                selectedLayerId = if (project.selectedFrameId == id) transformed.selectedLayerId else project.selectedLayerId,
+                selectedLayerId =
+                    if (project.selectedFrameId ==
+                        id
+                    ) {
+                        transformed.selectedLayerId
+                    } else {
+                        project.selectedLayerId
+                    },
             )
         }
         return updated

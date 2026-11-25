@@ -40,7 +40,10 @@ class BubbleGeometryTest {
     @Test fun thoughtCloudRetainsTheEightReferenceLobes() {
         val frame = Rect(0f, 0f, 140f, 140f)
         val rect = frame.deflate(BubbleTextLayout.strokeWidth(FontSize.M) / 2f)
-        val measure = PathMeasure().apply { setPath(BubbleGeometry.path(BubbleFamily.CLASSIC, 2, rect, 1f, frameRect = frame), true) }
+        val measure =
+            PathMeasure().apply {
+                setPath(BubbleGeometry.path(BubbleFamily.CLASSIC, 2, rect, 1f, frameRect = frame), true)
+            }
         val radii =
             FloatArray(2048) { index ->
                 val point = measure.getPosition(measure.length * index / 2048f)
@@ -78,7 +81,15 @@ class BubbleGeometryTest {
                     val pa = raster(a).toPixelMap()
                     val pb = raster(b).toPixelMap()
                     var different = 0
-                    for (y in 0 until 320) for (x in 0 until 320) if (abs(pa[x, y].alpha - pb[x, y].alpha) > 8f / 255f) different++
+                    for (y in 0 until 320) {
+                        for (x in 0 until 320) {
+                            if (abs(pa[x, y].alpha - pb[x, y].alpha) >
+                                8f / 255f
+                            ) {
+                                different++
+                            }
+                        }
+                    }
                     assertTrue(different < 100, "$type/$index tip=$tip: $different differing pixels")
                 }
             }

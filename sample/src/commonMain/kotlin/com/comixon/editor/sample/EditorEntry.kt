@@ -37,7 +37,10 @@ internal fun EditorRoot(workspace: EditorWorkspace) {
 private fun EditorEntry(workspace: EditorWorkspace) {
     EditorTheme {
         Surface(Modifier.fillMaxSize()) {
-            Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).padding(24.dp), contentAlignment = Alignment.Center) {
+            Box(
+                Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
                 Column(
                     Modifier.widthIn(max = 420.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -56,7 +59,10 @@ private fun EditorEntry(workspace: EditorWorkspace) {
                         modifier = Modifier.testTag("editor_open_demo"),
                         enabled = !workspace.isImporting,
                     ) { Text(EditorLabel.OpenDemo.text()) }
-                    TextButton(onClick = { workspace.openProject() }, enabled = !workspace.isImporting) { Text(EditorLabel.Open.text()) }
+                    TextButton(
+                        onClick = { workspace.openProject() },
+                        enabled = !workspace.isImporting,
+                    ) { Text(EditorLabel.Open.text()) }
                     if (workspace.isImporting) CircularProgressIndicator(Modifier.size(24.dp))
                 }
             }

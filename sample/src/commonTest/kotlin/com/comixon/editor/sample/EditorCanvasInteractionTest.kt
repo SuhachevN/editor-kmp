@@ -126,7 +126,12 @@ class EditorCanvasInteractionTest {
 
     @Test
     fun letteringCanBeResizedFromTheTopLeftCorner() {
-        val project = EditorReducer.addLettering(EditorProject(listOf(EditorFrame("frame"))), StyleCatalog.defaultLetteringStyle, "WOW!")
+        val project =
+            EditorReducer.addLettering(
+                EditorProject(listOf(EditorFrame("frame"))),
+                StyleCatalog.defaultLetteringStyle,
+                "WOW!",
+            )
         withCanvas(project = project) { state, initial ->
             val before = initial.selectedFrame!!.layers.single() as EditorLetterLayer
             val corner = Offset((before.bounds.x / 3).toFloat(), (before.bounds.y / 3).toFloat())
@@ -154,7 +159,8 @@ class EditorCanvasInteractionTest {
         project: EditorProject? = null,
         block: ComposeUiTest.(EditorState, EditorProject) -> Unit,
     ) = runComposeUiTest {
-        val initial = project ?: EditorReducer.addDefaultBubble(EditorProject(listOf(EditorFrame("frame"))), "Hello, world!")
+        val initial =
+            project ?: EditorReducer.addDefaultBubble(EditorProject(listOf(EditorFrame("frame"))), "Hello, world!")
         val state = EditorState(initial)
         if (cropMode) state.edit { EditorReducer.transformSelectedFrameCrop(it, 2.0, 0.0, 0.0) }
         setContent {

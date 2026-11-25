@@ -32,7 +32,6 @@ import com.comixon.editor.core.EditorLetterLayer
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-/** Prepared paths and text are used unchanged by the live canvas and bitmap export. */
 class FrameScene internal constructor(
     internal val frame: EditorFrame,
     internal val images: Map<String, ImageBitmap>,

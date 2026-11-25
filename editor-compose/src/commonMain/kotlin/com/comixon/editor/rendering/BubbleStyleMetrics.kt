@@ -2,7 +2,7 @@ package com.comixon.editor.rendering
 
 import com.comixon.editor.core.BubbleFamily
 
-/** DrawConfigurator.basisOffset: shared by the text container and the inset image mask. */
+// Text and image masks use the same inset.
 internal object BubbleStyleMetrics {
     fun basisOffset(
         type: BubbleFamily,

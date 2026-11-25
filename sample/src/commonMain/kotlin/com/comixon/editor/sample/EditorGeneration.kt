@@ -71,7 +71,9 @@ internal fun EditorGenerationRow(
                 if (history != null) {
                     workspace.selectSpeechGeneration(-1)
                 } else {
-                    frames.getOrNull(index - 1)?.let { frame -> state.select { EditorReducer.selectFrame(it, frame.id) } }
+                    frames.getOrNull(index - 1)?.let { frame ->
+                        state.select { EditorReducer.selectFrame(it, frame.id) }
+                    }
                 }
             },
             enabled = !busy && (history?.canShowPreviousGeneration ?: (index > 0)),
@@ -93,14 +95,22 @@ internal fun EditorGenerationRow(
             } else {
                 Icon(Icons.Outlined.AutoFixHigh, null, Modifier.size(18.dp))
             }
-            Text(EditorLabel.Generate.text(), Modifier.padding(start = 7.dp), fontSize = 15.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+            Text(
+                EditorLabel.Generate.text(),
+                Modifier.padding(start = 7.dp),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+            )
         }
         IconButton(
             onClick = {
                 if (history != null) {
                     workspace.selectSpeechGeneration(1)
                 } else {
-                    frames.getOrNull(index + 1)?.let { frame -> state.select { EditorReducer.selectFrame(it, frame.id) } }
+                    frames.getOrNull(index + 1)?.let { frame ->
+                        state.select { EditorReducer.selectFrame(it, frame.id) }
+                    }
                 }
             },
             enabled = !busy && (history?.canShowNextGeneration ?: (index in 0 until frames.lastIndex)),
@@ -119,11 +129,18 @@ internal fun FilterCatalog(
     val source = workspace.images[frame.originalImageUrl]
     val measurer = rememberEditorTextMeasurer()
     val enabled = scene != null && !workspace.isGenerating && settings.isValid
-    LazyColumn(modifier, contentPadding = PaddingValues(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    LazyColumn(
+        modifier,
+        contentPadding = PaddingValues(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
         if (frame.generatedImageUrls.isNotEmpty()) {
             item { EditorSectionTitle(EditorLabel.Versions) }
             item {
-                LazyRow(contentPadding = PaddingValues(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
                     items(frame.generatedImageUrls, key = { it }) { url ->
                         FilterTile(EditorLabel.Versions.text(), workspace.images[url], enabled = enabled) {
                             workspace.editor.edit { EditorReducer.applyGeneratedImage(it, url) }
@@ -152,7 +169,12 @@ internal fun FilterCatalog(
                                 96,
                             )
                         }
-                    FilterTile(filter.label.text(), preview, selected = frame.instantFilterName == filter, enabled = enabled) {
+                    FilterTile(
+                        filter.label.text(),
+                        preview,
+                        selected = frame.instantFilterName == filter,
+                        enabled = enabled,
+                    ) {
                         workspace.editor.edit { EditorReducer.applyInstantFilter(it, filter) }
                     }
                 }
@@ -190,19 +212,29 @@ private fun FilterTile(
     enabled: Boolean,
     onClick: () -> Unit,
 ) {
-    Column(Modifier.width(68.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(5.dp)) {
+    Column(
+        Modifier.width(68.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+    ) {
         Box(
             Modifier
                 .size(68.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(EditorColors.Control)
-                .border(if (selected) 2.dp else 0.dp, if (selected) EditorColors.Accent else Color.Transparent, RoundedCornerShape(8.dp))
-                .clickable(enabled = enabled, onClick = onClick),
+                .border(
+                    if (selected) 2.dp else 0.dp,
+                    if (selected) EditorColors.Accent else Color.Transparent,
+                    RoundedCornerShape(8.dp),
+                ).clickable(enabled = enabled, onClick = onClick),
         ) {
-            if (image !=
-                null
-            ) {
-                Image(image, label, Modifier.fillMaxSize().padding(if (selected) 2.dp else 0.dp), contentScale = ContentScale.Crop)
+            if (image != null) {
+                Image(
+                    image,
+                    label,
+                    Modifier.fillMaxSize().padding(if (selected) 2.dp else 0.dp),
+                    contentScale = ContentScale.Crop,
+                )
             }
         }
         Text(label, fontSize = 10.sp, maxLines = 1, color = EditorColors.Content)

@@ -61,7 +61,12 @@ internal fun EditorPanel(
             ) {
                 RoundEditorButton(Icons.Outlined.Close, EditorLabel.Cancel, { session.finishEditing(false) })
                 Text(if (draft != null) EditorLabel.Text.text() else tool.label.text())
-                RoundEditorButton(Icons.Outlined.Check, EditorLabel.Done, { session.finishEditing(true) }, accent = true)
+                RoundEditorButton(
+                    Icons.Outlined.Check,
+                    EditorLabel.Done,
+                    { session.finishEditing(true) },
+                    accent = true,
+                )
             }
         }
         when {
@@ -104,7 +109,11 @@ internal fun EditorPanel(
                     workspace,
                     selected,
                     onText = { session.editText(selected) },
-                    onShape = { session.selectTool(if (selected is EditorBubbleLayer) EditorTool.BUBBLE else EditorTool.LETTERING) },
+                    onShape = {
+                        session.selectTool(
+                            if (selected is EditorBubbleLayer) EditorTool.BUBBLE else EditorTool.LETTERING,
+                        )
+                    },
                 )
             else -> {
                 if (wide) Spacer(Modifier.weight(1f))

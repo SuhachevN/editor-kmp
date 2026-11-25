@@ -46,7 +46,12 @@ internal fun importedEditorImage(original: ImageBitmap): ImportedEditorImage {
             val width = (original.width * ratio).roundToInt().coerceAtLeast(1)
             val height = (original.height * ratio).roundToInt().coerceAtLeast(1)
             ImageBitmap(width, height).also { target ->
-                CanvasDrawScope().draw(Density(1f), LayoutDirection.Ltr, Canvas(target), Size(width.toFloat(), height.toFloat())) {
+                CanvasDrawScope().draw(
+                    Density(1f),
+                    LayoutDirection.Ltr,
+                    Canvas(target),
+                    Size(width.toFloat(), height.toFloat()),
+                ) {
                     drawImage(original, dstSize = IntSize(width, height), filterQuality = FilterQuality.High)
                 }
             }

@@ -1,18 +1,18 @@
 package com.comixon.editor.core
 
-/** Minimum sizes from the iOS bubble builders, adapted separately on each canvas axis. */
+/** Bubble minimum sizes use the original editor's 320-point coordinate system. */
 object EditorBubbleDimensions {
     data class Minimum(
         val width: Double,
         val height: Double,
     )
 
-    // Fixed UIKit point reference shared with the renderer; saved geometry remains 1080×1440.
+    // Dimensions are in reference points; saved geometry uses document pixels.
     const val IOS_CANVAS_POINTS = 414f
     const val FIXED_POINT_SCALE = EditorCanvasSpec.LOGICAL_WIDTH / IOS_CANVAS_POINTS
     const val TAIL_FORBIDDEN_INSET = 6.0 * FIXED_POINT_SCALE
 
-    // CEBubbleControlView bounds=32pt: max(halfSize+2, forbiddenInset) = 18pt.
+    // A 16-point handle radius plus a 2-point gap keeps the tail control outside the bubble.
     const val TAIL_PUSH_OUT = 18.0 * FIXED_POINT_SCALE
 
     const val DEFAULT_WIDTH = 140.0 * EditorCanvasSpec.LOGICAL_WIDTH / 320.0

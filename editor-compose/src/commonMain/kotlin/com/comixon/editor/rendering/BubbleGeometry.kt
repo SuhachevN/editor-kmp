@@ -9,8 +9,9 @@ import com.comixon.editor.core.BubbleFamily
 import kotlin.math.hypot
 import kotlin.math.min
 
-/** Shared by the editor and bitmap export. One reference unit is an iOS point
- * on a 320-wide canvas; resizing a bubble does not stretch its decorative details. */
+/**
+ * Geometry uses a 320-point reference canvas. Resizing a bubble preserves the size of its decorations.
+ */
 internal object BubbleGeometry {
     const val REFERENCE_WIDTH = 320f
     const val EXPORT_SCALE = 1080f / REFERENCE_WIDTH

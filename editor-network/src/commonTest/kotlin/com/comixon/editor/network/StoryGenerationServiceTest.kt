@@ -44,9 +44,13 @@ class StoryGenerationServiceTest {
                 }
             val client = HttpClient(engine) { install(HttpTimeout) }
             try {
-                val service = StoryGenerationService(ComixonGenerationService(client, ServerConfig(token = { "session-token" })))
+                val service =
+                    StoryGenerationService(ComixonGenerationService(client, ServerConfig(token = { "session-token" })))
                 val result = service.generate(filterImage, speechImage, true, null)
-                assertEquals("https://example.test/anime.jpg", assertIs<GenerationResult.Success<String>>(result.image).value)
+                assertEquals(
+                    "https://example.test/anime.jpg",
+                    assertIs<GenerationResult.Success<String>>(result.image).value,
+                )
                 assertEquals(
                     "Hello",
                     assertIs<GenerationResult.Success<SpeechGeneration>>(result.speech)
@@ -54,7 +58,10 @@ class StoryGenerationServiceTest {
                         .single()
                         .text,
                 )
-                assertEquals(setOf("/v2/filter", "/v2/get_speech"), engine.requestHistory.map { it.url.encodedPath }.toSet())
+                assertEquals(
+                    setOf("/v2/filter", "/v2/get_speech"),
+                    engine.requestHistory.map { it.url.encodedPath }.toSet(),
+                )
                 assertEquals(2, engine.requestHistory.size)
             } finally {
                 client.close()

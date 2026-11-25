@@ -41,7 +41,12 @@ class BubbleTailEditingTest {
                 val dx = (n.x * kotlin.math.cos(angle) - n.y * kotlin.math.sin(angle)).toFloat()
                 val dy = (n.x * kotlin.math.sin(angle) + n.y * kotlin.math.cos(angle)).toFloat()
                 val end = Offset(anchor.point.x + 110f * dx, anchor.point.y + 110f * dy)
-                assertEquals(anchor.percent, anchor.draggedPercent(end), .00001f, "$type/$index must retain a 15-degree tilt")
+                assertEquals(
+                    anchor.percent,
+                    anchor.draggedPercent(end),
+                    .00001f,
+                    "$type/$index must retain a 15-degree tilt",
+                )
             }
         }
     }
@@ -72,7 +77,10 @@ class BubbleTailEditingTest {
         assertEquals(original.percent, percent, .00001f)
         assertEquals(original.point.x, current.point.x, .01f)
         assertTrue(abs(current.incline) > 10f)
-        assertTrue(abs(nearest.point.x - current.point.x) > 3f, "Fixture must distinguish history from nearest-point rendering")
+        assertTrue(
+            abs(nearest.point.x - current.point.x) > 3f,
+            "Fixture must distinguish history from nearest-point rendering",
+        )
     }
 
     @Test fun largeEndMotionSlidesTheBaseAtTheAllowedIncline() {

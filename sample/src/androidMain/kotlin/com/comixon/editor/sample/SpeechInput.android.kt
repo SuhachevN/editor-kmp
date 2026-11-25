@@ -68,7 +68,9 @@ private class AndroidSpeechInput(
             return
         }
         state = SpeechInputState.LISTENING
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
             permissionPending = true
             requestPermission()
         } else {
@@ -151,7 +153,9 @@ private class AndroidSpeechInput(
                 SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> SpeechInputError.PERMISSION
                 SpeechRecognizer.ERROR_NETWORK, SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> SpeechInputError.NETWORK
                 SpeechRecognizer.ERROR_NO_MATCH, SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> SpeechInputError.NO_MATCH
-                SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED, SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE -> SpeechInputError.LANGUAGE
+                SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED,
+                SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE,
+                -> SpeechInputError.LANGUAGE
                 else -> SpeechInputError.FAILED
             },
         )

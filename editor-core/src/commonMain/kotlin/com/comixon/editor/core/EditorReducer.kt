@@ -90,7 +90,12 @@ object EditorReducer {
                                     type = style.type,
                                     bubbleIndex = style.index,
                                     tailBasePercent = null,
-                                    bounds = EditorBubbleDimensions.ensureMinimum(layer.bounds, style.type, style.index),
+                                    bounds =
+                                        EditorBubbleDimensions.ensureMinimum(
+                                            layer.bounds,
+                                            style.type,
+                                            style.index,
+                                        ),
                                 )
                             } else {
                                 layer
@@ -504,7 +509,8 @@ object EditorReducer {
                 frame.copy(layers = frame.layers.filterNot { it.id == layerId })
             }.copy(selectedLayerId = null)
 
-    private fun EditorProject.selectedFrame(): EditorFrame? = frames.firstOrNull { it.id == selectedFrameId } ?: frames.firstOrNull()
+    private fun EditorProject.selectedFrame(): EditorFrame? =
+        frames.firstOrNull { it.id == selectedFrameId } ?: frames.firstOrNull()
 
     private fun EditorProject.updateSelectedFrame(transform: (EditorFrame) -> EditorFrame): EditorProject {
         val frame = selectedFrame() ?: return this
@@ -528,8 +534,16 @@ object EditorReducer {
                     bounds = movedBounds,
                     tailEndPoint =
                         tailEndPoint.copy(
-                            x = (tailEndPoint.x + movedBounds.x - bounds.x).coerceIn(0.0, EditorCanvasSpec.LOGICAL_WIDTH),
-                            y = (tailEndPoint.y + movedBounds.y - bounds.y).coerceIn(0.0, EditorCanvasSpec.LOGICAL_HEIGHT),
+                            x =
+                                (tailEndPoint.x + movedBounds.x - bounds.x).coerceIn(
+                                    0.0,
+                                    EditorCanvasSpec.LOGICAL_WIDTH,
+                                ),
+                            y =
+                                (tailEndPoint.y + movedBounds.y - bounds.y).coerceIn(
+                                    0.0,
+                                    EditorCanvasSpec.LOGICAL_HEIGHT,
+                                ),
                         ),
                 )
             is EditorLetterLayer -> copy(bounds = movedBounds)

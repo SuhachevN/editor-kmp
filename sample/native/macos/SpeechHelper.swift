@@ -91,7 +91,6 @@ private final class Dictation {
 }
 
 if CommandLine.arguments.contains("--self-test") {
-    // Exercise framework linkage without requesting microphone access in CI.
     guard !SFSpeechRecognizer.supportedLocales().isEmpty else { exit(1) }
     emit("done")
     exit(0)

@@ -4,7 +4,7 @@ import com.comixon.editor.core.SpeechGeneration
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 
-/** Credentials are supplied per request and never persisted by the editor. */
+/** The token provider is evaluated for each request. Tokens are not saved in project files. */
 class ServerConfig(
     val baseUrl: String = "https://dev.comixon.com",
     val language: String = "ru-RU",
@@ -19,8 +19,12 @@ class ServerConfig(
                 .substringBefore('#')
         require(authority.isNotBlank()) { "The server URL must include a host" }
         val url = Url(baseUrl)
-        require(url.protocol == URLProtocol.HTTPS && url.host.isNotBlank()) { "The server URL must use HTTPS and include a host" }
-        require(url.parameters.isEmpty() && url.fragment.isEmpty()) { "The server URL must not include a query or fragment" }
+        require(url.protocol == URLProtocol.HTTPS && url.host.isNotBlank()) {
+            "The server URL must use HTTPS and include a host"
+        }
+        require(
+            url.parameters.isEmpty() && url.fragment.isEmpty(),
+        ) { "The server URL must not include a query or fragment" }
     }
 }
 
@@ -52,7 +56,7 @@ interface EditorGenerationService {
     ): GenerationResult<SpeechGeneration>
 }
 
-/** Names are the wire values accepted by the Comixon API. */
+// Filter names are part of the server contract.
 object AiFilters {
     val names: List<String> =
         listOf(

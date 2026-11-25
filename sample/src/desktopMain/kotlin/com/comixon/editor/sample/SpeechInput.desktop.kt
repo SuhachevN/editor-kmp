@@ -30,7 +30,7 @@ internal actual fun rememberSpeechInput(
     return input
 }
 
-/** Native helpers exchange UTF-8 transcripts over stdin/stdout; audio never enters the JVM. */
+// Native helpers return transcripts over stdout; stdin carries the stop command.
 private class DesktopSpeechInput(
     private val scope: CoroutineScope,
     private val onText: (String) -> Unit,
@@ -133,8 +133,16 @@ internal sealed interface NativeSpeechEvent {
 internal fun parseSpeechEvent(line: String): NativeSpeechEvent? {
     val value = line.substringAfter('\t', "")
     return when (line.substringBefore('\t')) {
-        "text" -> runCatching { NativeSpeechEvent.Text(String(Base64.getDecoder().decode(value), Charsets.UTF_8)) }.getOrNull()
-        "error" -> NativeSpeechEvent.Error(SpeechInputError.entries.firstOrNull { it.name == value } ?: SpeechInputError.FAILED)
+        "text" ->
+            runCatching {
+                NativeSpeechEvent.Text(
+                    String(Base64.getDecoder().decode(value), Charsets.UTF_8),
+                )
+            }.getOrNull()
+        "error" ->
+            NativeSpeechEvent.Error(
+                SpeechInputError.entries.firstOrNull { it.name == value } ?: SpeechInputError.FAILED,
+            )
         "done" -> NativeSpeechEvent.Done
         else -> null
     }
@@ -166,8 +174,10 @@ private fun nativeSpeechCommand(): List<String>? {
             val helper =
                 File(
                     configured ?: resources?.let { File(it, "comixon-speech").path }
-                        ?: listOf("build/native-resources/macos/comixon-speech", "sample/build/native-resources/macos/comixon-speech")
-                            .firstOrNull { File(it).canExecute() } ?: return null,
+                        ?: listOf(
+                            "build/native-resources/macos/comixon-speech",
+                            "sample/build/native-resources/macos/comixon-speech",
+                        ).firstOrNull { File(it).canExecute() } ?: return null,
                 )
             if (helper.canExecute()) listOf(helper.absolutePath, language) else null
         }

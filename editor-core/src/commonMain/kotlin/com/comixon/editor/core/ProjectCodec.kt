@@ -3,7 +3,7 @@ package com.comixon.editor.core
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-/** Versioned, portable document format. Embedded data URLs keep imported images with the project. */
+/** Imported images are embedded as data URLs so project files remain self-contained. */
 object ProjectCodec {
     private val json =
         Json {

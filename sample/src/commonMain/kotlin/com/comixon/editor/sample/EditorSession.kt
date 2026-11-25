@@ -41,7 +41,11 @@ internal class EditorSession(
 
     fun selectTool(next: EditorTool) {
         cropDraft = if (next == EditorTool.CROP) EditorState(editor.project.copy(selectedLayerId = null)) else null
-        if (next in listOf(EditorTool.FRAME, EditorTool.CROP, EditorTool.FILTER)) editor.select { EditorReducer.selectLayer(it, null) }
+        if (next in
+            listOf(EditorTool.FRAME, EditorTool.CROP, EditorTool.FILTER)
+        ) {
+            editor.select { EditorReducer.selectLayer(it, null) }
+        }
         tool = next
         expanded = true
     }
@@ -67,13 +71,34 @@ internal class EditorSession(
         val crop = cropDraft?.project?.selectedFrame
         when {
             text != null -> {
-                if (save) editor.edit { EditorReducer.updateLayerText(it, text.layer.id, text.text, text.size, text.font) }
+                if (save) {
+                    editor.edit {
+                        EditorReducer.updateLayerText(
+                            it,
+                            text.layer.id,
+                            text.text,
+                            text.size,
+                            text.font,
+                        )
+                    }
+                }
                 textDraft = null
             }
             crop != null -> {
                 if (save) {
                     editor.edit { project ->
-                        project.copy(frames = project.frames.map { if (it.id == crop.id) it.copy(crop = crop.crop) else it })
+                        project.copy(
+                            frames =
+                                project.frames.map {
+                                    if (it.id ==
+                                        crop.id
+                                    ) {
+                                        it.copy(crop = crop.crop)
+                                    } else {
+                                        it
+                                    }
+                                },
+                        )
                     }
                 }
                 cropDraft = null

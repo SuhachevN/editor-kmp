@@ -48,7 +48,7 @@ data class EditorBubbleLayer(
     val tailEndPoint: EditorPoint,
     val isTailEnabled: Boolean,
     val imageUrl: String? = null,
-    // Editing history, like iOS currentDistanceProcent. Local drafts persist it outside BubbleObject.
+    // Null keeps the initial tail attachment; dragging the tail stores its position along the path.
     val tailBasePercent: Float? = null,
     val font: EditorFont = EditorFont.COMIXON,
 ) : EditorLayer

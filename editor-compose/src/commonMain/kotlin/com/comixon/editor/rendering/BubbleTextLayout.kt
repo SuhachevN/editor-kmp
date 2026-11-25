@@ -18,7 +18,6 @@ import com.comixon.editor.core.BubbleFamily
 import com.comixon.editor.core.FontSize
 import kotlin.math.min
 
-/** Uses the shared text shaper and style paths in logical export pixels on every platform. */
 internal object BubbleTextLayout {
     data class Line(
         val layout: TextLayoutResult,

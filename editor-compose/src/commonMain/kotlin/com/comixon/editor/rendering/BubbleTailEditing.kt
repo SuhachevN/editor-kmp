@@ -5,8 +5,8 @@ import androidx.compose.ui.geometry.Rect
 import com.comixon.editor.core.EditorBubbleLayer
 import com.comixon.editor.core.EditorProject
 import com.comixon.editor.core.EditorReducer
+import kotlin.math.abs
 
-/** Native path calculations stay outside the domain editor; history travels with its immutable state. */
 object BubbleTailEditing {
     fun moveLayer(
         project: EditorProject,
@@ -51,18 +51,18 @@ object BubbleTailEditing {
                                     previous.layers.firstOrNull { it.id == layer.id } as? EditorBubbleLayer
                                         ?: return@layers layer
                                 if (old == layer) return@layers layer
-                                val resized = old.bounds.width != layer.bounds.width || old.bounds.height != layer.bounds.height
+                                val resized =
+                                    old.bounds.width != layer.bounds.width || old.bounds.height != layer.bounds.height
                                 val moved = old.bounds.x != layer.bounds.x || old.bounds.y != layer.bounds.y
-                                // Moving the entire unedited bubble also translates the initial control.
-                                // Materializing its percentage here would settle Noise onto the inset path.
+                                // Moving an untouched bubble must not snap Noise's tail to the inset path.
                                 if (moved &&
                                     !resized &&
                                     old.tailBasePercent == null &&
-                                    kotlin.math.abs(
+                                    abs(
                                         (old.tailEndPoint.x - old.bounds.x) -
                                             (layer.tailEndPoint.x - layer.bounds.x),
                                     ) < .0001 &&
-                                    kotlin.math.abs(
+                                    abs(
                                         (old.tailEndPoint.y - old.bounds.y) -
                                             (layer.tailEndPoint.y - layer.bounds.y),
                                     ) < .0001

@@ -21,7 +21,6 @@ fun main(args: Array<String>) {
             EditorApp(startWithDemo = smokeReport != null)
             if (smokeReport != null) {
                 LaunchedEffect(Unit) {
-                    // Resolve the shared UI and font resources before reporting a successful packaged launch.
                     delay(3_000)
                     check(window.isShowing)
                     smokeReport.parentFile?.mkdirs()

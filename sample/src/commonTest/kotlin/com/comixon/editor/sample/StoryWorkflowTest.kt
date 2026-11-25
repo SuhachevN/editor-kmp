@@ -45,12 +45,22 @@ class StoryWorkflowTest {
                 val before = project(service.source)
                 runOnIdle {
                     workspace.editor.replace(before)
-                    workspace.generate(scene(before, service.source, measurer), ServerConfig(token = { "test-session" }))
+                    workspace.generate(
+                        scene(before, service.source, measurer),
+                        ServerConfig(token = { "test-session" }),
+                    )
                 }
                 waitUntil(timeoutMillis = 15_000) { service.speechCalls == 1 }
                 lateinit var changed: EditorProject
                 runOnIdle {
-                    workspace.editor.edit { it.copy(frames = it.frames.map { frame -> frame.copy(originalImageUrl = "replacement") }) }
+                    workspace.editor.edit {
+                        it.copy(
+                            frames =
+                                it.frames.map { frame ->
+                                    frame.copy(originalImageUrl = "replacement")
+                                },
+                        )
+                    }
                     changed = workspace.editor.project
                     gate.complete(Unit)
                 }
@@ -79,7 +89,10 @@ class StoryWorkflowTest {
                 val before = project(service.source)
                 runOnIdle {
                     workspace.editor.replace(before)
-                    workspace.generate(scene(before, service.source, measurer), ServerConfig(token = { "test-session" }))
+                    workspace.generate(
+                        scene(before, service.source, measurer),
+                        ServerConfig(token = { "test-session" }),
+                    )
                 }
                 waitUntil(timeoutMillis = 15_000) { service.speechCalls == 1 && !workspace.isGenerating }
                 runOnIdle {
@@ -99,7 +112,10 @@ class StoryWorkflowTest {
                     assertEquals(before, workspace.editor.project, "Both server results must be one undo entry")
                     workspace.editor.redo()
                     assertEquals(generated, workspace.editor.project)
-                    workspace.generate(scene(generated, service.generated, measurer), ServerConfig(token = { "test-session" }))
+                    workspace.generate(
+                        scene(generated, service.generated, measurer),
+                        ServerConfig(token = { "test-session" }),
+                    )
                 }
                 waitUntil(timeoutMillis = 15_000) { service.speechCalls == 2 && !workspace.isGenerating }
                 runOnIdle {
@@ -143,7 +159,10 @@ class StoryWorkflowTest {
                 val before = project(service.source)
                 runOnIdle {
                     workspace.editor.replace(before)
-                    workspace.generate(scene(before, service.source, measurer), ServerConfig(token = { "test-session" }))
+                    workspace.generate(
+                        scene(before, service.source, measurer),
+                        ServerConfig(token = { "test-session" }),
+                    )
                 }
                 waitUntil(timeoutMillis = 15_000) { service.speechCalls == 1 && !workspace.isGenerating }
                 runOnIdle {
@@ -162,7 +181,10 @@ class StoryWorkflowTest {
         }
 
     private fun project(source: String): EditorProject =
-        EditorReducer.addDefaultBubble(EditorProject(listOf(EditorFrame("frame", originalImageUrl = source))), "Original")
+        EditorReducer.addDefaultBubble(
+            EditorProject(listOf(EditorFrame("frame", originalImageUrl = source))),
+            "Original",
+        )
 
     private fun scene(
         project: EditorProject,
@@ -207,7 +229,9 @@ class StoryWorkflowTest {
             return if (failSpeech) {
                 GenerationResult.Failure(FailureKind.SERVER, "Speech failed")
             } else {
-                GenerationResult.Success(SpeechGeneration(listOf(SpeechSuggestion("Dialogue " + speechCalls)), "A city", true))
+                GenerationResult.Success(
+                    SpeechGeneration(listOf(SpeechSuggestion("Dialogue " + speechCalls)), "A city", true),
+                )
             }
         }
     }

@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathOperation
 import com.comixon.editor.core.BubbleFamily
 
-/** ShapeView.getImageMaskPath scales by (bounds.size - basisOffset), then offsets by half. */
+// Center the image mask inside the bubble's inset bounds.
 internal object BubbleImageMask {
     fun path(
         type: BubbleFamily,

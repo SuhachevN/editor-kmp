@@ -113,8 +113,7 @@ internal class BubbleTailAnchor(
             exclusion: Float = 0f,
             maxIncline: Float = 180f,
         ): Sample {
-            // Explicit corner exclusions are supplied as distances in the same reference space.
-            // The four bounding corners match PathConfigurator.pathWithCornerExclusionPoints.
+            // Corner exclusions use distances along the traverse path.
             val corners = if (exclusion > 0f) exclusionPoints.map { nearest(it).distance } else emptyList()
 
             fun allowed(sample: Sample): Boolean {
@@ -125,7 +124,8 @@ internal class BubbleTailAnchor(
                 ) {
                     return false
                 }
-                return abs(angle(sample.normal, Offset(target.x - sample.point.x, target.y - sample.point.y))) <= maxIncline + .1f
+                return abs(angle(sample.normal, Offset(target.x - sample.point.x, target.y - sample.point.y))) <=
+                    maxIncline + .1f
             }
 
             fun score(sample: Sample): Float = hypot(sample.point.x - target.x, sample.point.y - target.y)
@@ -157,8 +157,7 @@ internal class BubbleTailAnchor(
             return best
         }
 
-        // TraversePath.nearestPoint(toPoint:cashedPercent:angle:). Search locally from the
-        // previous base, preserving the clamped angle instead of minimizing tail length.
+        // Search near the previous base to preserve the tail angle instead of minimizing its length.
         fun follow(
             target: Offset,
             cachedPercent: Float,
@@ -224,7 +223,12 @@ internal class BubbleTailAnchor(
 
         fun corners(rect: Rect): List<Offset> =
             pathRect(rect, 0f).let { r ->
-                listOf(Offset(r.left, r.top), Offset(r.right, r.top), Offset(r.right, r.bottom), Offset(r.left, r.bottom))
+                listOf(
+                    Offset(r.left, r.top),
+                    Offset(r.right, r.top),
+                    Offset(r.right, r.bottom),
+                    Offset(r.left, r.bottom),
+                )
             }
 
         fun path(

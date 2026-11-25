@@ -505,7 +505,7 @@ class EditorReducerTest {
                 true,
             )
         val project = EditorProject(listOf(EditorFrame("frame", layers = listOf(layer))))
-        // iOS forbidden inset=6pt, push out=max(32pt/2+2pt,6pt)=18pt.
+        // The control needs 18 points of clearance: a 16-point radius plus a 2-point gap.
         val clearance = 24.0 * 1080.0 / 414.0
         val cases =
             listOf(

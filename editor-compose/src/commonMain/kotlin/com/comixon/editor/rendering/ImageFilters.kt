@@ -51,4 +51,12 @@ internal fun ImageFilter.colorFilter(): ColorFilter? =
             )
     }
 
-private fun rgba(vararg rows: FloatArray): ColorFilter = ColorFilter.colorMatrix(ColorMatrix(rows.flatMap { it.toList() }.toFloatArray()))
+private fun rgba(vararg rows: FloatArray): ColorFilter =
+    ColorFilter.colorMatrix(
+        ColorMatrix(
+            rows
+                .flatMap {
+                    it.toList()
+                }.toFloatArray(),
+        ),
+    )

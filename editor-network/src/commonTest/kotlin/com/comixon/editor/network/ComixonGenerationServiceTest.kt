@@ -42,7 +42,9 @@ class ComixonGenerationServiceTest {
                         calls++
                         if (calls == 1) "first-token" else null
                     })
-                assertIs<GenerationResult.Success<*>>(ComixonGenerationService(client, config).speech(image, false, "A street"))
+                assertIs<GenerationResult.Success<*>>(
+                    ComixonGenerationService(client, config).speech(image, false, "A street"),
+                )
                 assertEquals(1, calls)
             } finally {
                 client.close()
@@ -50,7 +52,12 @@ class ComixonGenerationServiceTest {
         }
 
     @Test fun serverConfigurationRejectsInvalidBaseUrls() {
-        for (url in listOf("http://example.test", "https://", "https://example.test?token=private", "https://example.test#fragment")) {
+        for (url in listOf(
+            "http://example.test",
+            "https://",
+            "https://example.test?token=private",
+            "https://example.test#fragment",
+        )) {
             assertFailsWith<IllegalArgumentException> { ServerConfig(url) }
         }
         assertEquals("https://example.test/api", ServerConfig("https://example.test/api").baseUrl)
@@ -71,8 +78,15 @@ class ComixonGenerationServiceTest {
                 }
             val client = HttpClient(engine) { install(HttpTimeout) }
             try {
-                val result = ComixonGenerationService(client, ServerConfig(token = { "test-token" })).filter(image, "anime")
-                assertEquals("https://example.test/result.jpg", assertIs<GenerationResult.Success<String>>(result).value)
+                val result =
+                    ComixonGenerationService(
+                        client,
+                        ServerConfig(token = { "test-token" }),
+                    ).filter(image, "anime")
+                assertEquals(
+                    "https://example.test/result.jpg",
+                    assertIs<GenerationResult.Success<String>>(result).value,
+                )
                 assertEquals(1, engine.requestHistory.size)
             } finally {
                 client.close()
@@ -88,12 +102,18 @@ class ComixonGenerationServiceTest {
                     assertEquals(image, body["image"]?.jsonPrimitive?.content)
                     assertEquals("true", body["first_gen"]?.jsonPrimitive?.content)
                     assertFalse("image_desc" in body)
-                    respond("""{"speech":[[{"text":"Hello","bubble":[0.1,0.2,0.4,0.3]}]],"image_desc":"A street"}""", headers = jsonHeaders)
+                    respond(
+                        """{"speech":[[{"text":"Hello","bubble":[0.1,0.2,0.4,0.3]}]],"image_desc":"A street"}""",
+                        headers = jsonHeaders,
+                    )
                 }
             val client = HttpClient(engine) { install(HttpTimeout) }
             try {
                 val result = ComixonGenerationService(client, ServerConfig(token = { "test-token" })).speech(image)
-                val generation = assertIs<GenerationResult.Success<com.comixon.editor.core.SpeechGeneration>>(result).value
+                val generation =
+                    assertIs<GenerationResult.Success<com.comixon.editor.core.SpeechGeneration>>(
+                        result,
+                    ).value
                 assertEquals("A street", generation.imageDesc)
                 val suggestion = generation.suggestions.single()
                 assertEquals("Hello", suggestion.text)
@@ -114,7 +134,10 @@ class ComixonGenerationServiceTest {
                     val body = Json.decodeFromString<JsonObject>(request.body.toByteArray().decodeToString())
                     assertFalse("image" in body)
                     assertEquals("A street", body["image_desc"]?.jsonPrimitive?.content)
-                    respond("""{"next_generation":{"speech":{"0":{"text":"Again"}},"image_desc":"A street"}}""", headers = jsonHeaders)
+                    respond(
+                        """{"next_generation":{"speech":{"0":{"text":"Again"}},"image_desc":"A street"}}""",
+                        headers = jsonHeaders,
+                    )
                 }
             val client = HttpClient(engine) { install(HttpTimeout) }
             try {
@@ -170,7 +193,12 @@ class ComixonGenerationServiceTest {
         runTest {
             val client = HttpClient(MockEngine { throw CancellationException("cancelled") }) { install(HttpTimeout) }
             try {
-                assertFailsWith<CancellationException> { ComixonGenerationService(client, ServerConfig()).filter(image, "anime") }
+                assertFailsWith<CancellationException> {
+                    ComixonGenerationService(
+                        client,
+                        ServerConfig(),
+                    ).filter(image, "anime")
+                }
             } finally {
                 client.close()
             }

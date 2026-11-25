@@ -4,7 +4,6 @@ import com.comixon.editor.core.SpeechGeneration
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
-/** Start generation combines an anime image and dialogue from two direct HTTP requests. */
 class StoryGenerationService(
     private val service: EditorGenerationService,
 ) {

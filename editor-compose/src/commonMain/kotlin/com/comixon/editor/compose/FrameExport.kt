@@ -16,7 +16,6 @@ import com.comixon.editor.rendering.drawEditorFrame
 import kotlin.io.encoding.Base64
 import kotlin.math.roundToInt
 
-/** Renders the artwork without selection handles, using exactly the canvas scene. */
 fun renderFrame(
     scene: FrameScene,
     width: Int = 1080,
@@ -53,14 +52,13 @@ fun renderStrip(
 
 enum class ImageEncoding { PNG, JPEG }
 
-/** The only platform-specific rendering boundary: encoding an already drawn bitmap. */
 expect fun encodeImage(
     bitmap: ImageBitmap,
     encoding: ImageEncoding = ImageEncoding.PNG,
     quality: Int = 95,
 ): ByteArray
 
-/** JPEG payload sizes and MIME aliases match the existing Comixon endpoints. */
+// The endpoints require different JPEG dimensions, size limits and MIME aliases.
 @OptIn(kotlin.io.encoding.ExperimentalEncodingApi::class)
 fun generationImage(
     scene: FrameScene,
@@ -71,7 +69,6 @@ fun generationImage(
         if (frame.height == height) frame else resizeGenerationImage(frame, width, height)
     }
 
-/** Normalizes the second image used by the blending filter to the same server format. */
 fun generationImage(
     image: ImageBitmap,
     speech: Boolean = false,

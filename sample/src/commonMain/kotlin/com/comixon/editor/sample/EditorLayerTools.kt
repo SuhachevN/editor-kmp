@@ -77,7 +77,10 @@ internal fun LayerEditingBar(
     onShape: () -> Unit,
 ) {
     val state = workspace.editor
-    Row(Modifier.fillMaxWidth().height(100.dp).padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        Modifier.fillMaxWidth().height(100.dp).padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         if (layer is EditorBubbleLayer) {
             LayerAction(Res.drawable.editor_action_tail, EditorLabel.Tail, Modifier.weight(1f)) {
                 state.edit { EditorReducer.toggleBubbleTail(it, layer.id) }
@@ -118,9 +121,7 @@ private fun LayerAction(
             label.text(),
             Modifier.size(26.dp),
             tint =
-                if (label ==
-                    EditorLabel.Delete
-                ) {
+                if (label == EditorLabel.Delete) {
                     EditorColors.Delete
                 } else {
                     EditorColors.Content

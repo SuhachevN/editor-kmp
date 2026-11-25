@@ -83,7 +83,14 @@ internal fun EditorScreen(workspace: EditorWorkspace) {
         remember(originalScene, draft, workspace.images, families, measurer) {
             val frame =
                 if (draft != null) {
-                    EditorReducer.updateLayerText(editor.project, draft.layer.id, draft.text, draft.size, draft.font).selectedFrame
+                    EditorReducer
+                        .updateLayerText(
+                            editor.project,
+                            draft.layer.id,
+                            draft.text,
+                            draft.size,
+                            draft.font,
+                        ).selectedFrame
                 } else {
                     null
                 }
@@ -149,13 +156,24 @@ internal fun EditorScreen(workspace: EditorWorkspace) {
                                 Modifier.weight(1f).fillMaxHeight().padding(24.dp),
                                 session.cropDraft != null,
                             )
-                            EditorPanel(session, workspace, scene, settings, true, Modifier.width(380.dp).fillMaxHeight())
+                            EditorPanel(
+                                session,
+                                workspace,
+                                scene,
+                                settings,
+                                true,
+                                Modifier.width(380.dp).fillMaxHeight(),
+                            )
                         }
                     } else {
                         EditorCanvas(
                             session.canvasState,
                             scene,
-                            Modifier.fillMaxSize().padding(bottom = if (contextual) 0.dp else panelHeight).clipToBounds(),
+                            Modifier
+                                .fillMaxSize()
+                                .padding(
+                                    bottom = if (contextual) 0.dp else panelHeight,
+                                ).clipToBounds(),
                             cropMode = session.cropDraft != null,
                             alignCanvasTop = contextual || selected != null,
                             preserveCanvasWidth = contextual,
@@ -175,13 +193,7 @@ internal fun EditorScreen(workspace: EditorWorkspace) {
                         Modifier.align(Alignment.BottomCenter).testTag("editor_generation_notice").padding(
                             start = 16.dp,
                             end = 16.dp,
-                            bottom =
-                                if (wide) {
-                                    24.dp
-                                } else {
-                                    panelHeight +
-                                        12.dp
-                                },
+                            bottom = if (wide) 24.dp else panelHeight + 12.dp,
                         ),
                     )
                 }
@@ -203,7 +215,10 @@ internal fun EditorScreen(workspace: EditorWorkspace) {
 
 @Composable
 private fun GenerationOverlay(workspace: EditorWorkspace) {
-    Box(Modifier.fillMaxSize().background(EditorColors.Background.copy(alpha = .6f)), contentAlignment = Alignment.Center) {
+    Box(
+        Modifier.fillMaxSize().background(EditorColors.Background.copy(alpha = .6f)),
+        contentAlignment = Alignment.Center,
+    ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
             CircularProgressIndicator(Modifier.size(54.dp), color = EditorColors.Content)
             Text(workspace.generationLabel)

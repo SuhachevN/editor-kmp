@@ -8,7 +8,7 @@ import com.comixon.editor.core.BubbleFamily
 import kotlin.math.atan2
 import kotlin.math.hypot
 
-/** Tail recipes shared by preview and export, in the same 320-point reference space as bodies. */
+// Tail geometry uses the same 320-point coordinate system as bubble bodies.
 internal object BubbleTailGeometry {
     fun path(
         type: BubbleFamily,
@@ -42,7 +42,7 @@ internal object BubbleTailGeometry {
                 type == BubbleFamily.SCREAMO -> {
                     val width = base + 10f * p
                     Path().apply {
-                        // TailDrawPathCreateMethods.lightning, before rotation from the downward axis.
+                        // The lightning tail points down before rotation.
                         moveTo((.46312f - .5f) * width, 1.37f * p)
                         lineTo((.06847f - .5f) * width, tailLength - 25.11f * p)
                         lineTo((.48167f - .5f) * width, tailLength - 26.26f * p)
@@ -103,7 +103,9 @@ internal object BubbleTailGeometry {
             }
         var visible = sizes
         var centers = distribute(visible.size)
-        while (visible.size > 1 && centers.zipWithNext().any { (a, b) -> hypot(a.x - b.x, a.y - b.y) < minimumDistance }) {
+        while (visible.size > 1 &&
+            centers.zipWithNext().any { (a, b) -> hypot(a.x - b.x, a.y - b.y) < minimumDistance }
+        ) {
             visible = visible.drop(1)
             centers = distribute(visible.size)
         }

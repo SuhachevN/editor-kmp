@@ -13,7 +13,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-/** Direct HTTP integration with the Comixon generation endpoints. */
 class ComixonGenerationService(
     private val client: HttpClient,
     private val config: ServerConfig,
@@ -33,7 +32,11 @@ class ComixonGenerationService(
             require(filter in AiFilters.names) { "Unknown AI filter" }
             require(imageDataUrl.startsWith("data:image/")) { "Expected an image data URL" }
             val payload = json.encodeToString(FilterRequest(imageDataUrl, backImage, filter))
-            json.decodeFromString<FilterResponse>(post("/v2/filter", payload, 120_000, config.token())).image.firstOrNull()
+            json
+                .decodeFromString<FilterResponse>(
+                    post("/v2/filter", payload, 120_000, config.token()),
+                ).image
+                .firstOrNull()
                 ?: throw ProtocolFailure("The filter response contains no image")
         }
 
@@ -48,7 +51,10 @@ class ComixonGenerationService(
             val authenticated = !token.isNullOrBlank()
             val request =
                 SpeechRequestDto(
-                    image = imageDataUrl.takeIf { authenticated || firstGeneration || imageDescription.isNullOrBlank() },
+                    image =
+                        imageDataUrl.takeIf {
+                            authenticated || firstGeneration || imageDescription.isNullOrBlank()
+                        },
                     firstGen = firstGeneration,
                     langZone = config.language,
                     imageDesc = imageDescription?.takeIf { !authenticated && !firstGeneration },

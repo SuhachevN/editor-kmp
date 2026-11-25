@@ -189,7 +189,14 @@ internal object BubblePaths {
                 r.right - 0.86f,
                 r.top + 0.49720f * r.height,
             )
-            cubicTo(r.right - 0.86f, r.top + 0.23129f * r.height, r.left + 0.94409f * r.width, r.top, r.left + 0.50195f * r.width, r.top)
+            cubicTo(
+                r.right - 0.86f,
+                r.top + 0.23129f * r.height,
+                r.left + 0.94409f * r.width,
+                r.top,
+                r.left + 0.50195f * r.width,
+                r.top,
+            )
             close()
         }
 
@@ -197,8 +204,22 @@ internal object BubblePaths {
         Path().apply {
             moveTo(r.right - 19.63f, r.top + 19.49f)
             cubicTo(r.right - 19.63f, r.top + 19.49f, r.right - 20.02f, r.top + 34.41f, r.right - 5.47f, r.top + 25.74f)
-            cubicTo(r.right - 5.47f, r.top + 25.74f, r.right - 28.78f, r.bottom - 53.54f, r.right - 3.11f, r.bottom - 25.02f)
-            cubicTo(r.right - 3.11f, r.bottom - 25.02f, r.right - 22.78f, r.bottom - 32.52f, r.right - 17.27f, r.bottom - 16.27f)
+            cubicTo(
+                r.right - 5.47f,
+                r.top + 25.74f,
+                r.right - 28.78f,
+                r.bottom - 53.54f,
+                r.right - 3.11f,
+                r.bottom - 25.02f,
+            )
+            cubicTo(
+                r.right - 3.11f,
+                r.bottom - 25.02f,
+                r.right - 22.78f,
+                r.bottom - 32.52f,
+                r.right - 17.27f,
+                r.bottom - 16.27f,
+            )
             cubicTo(
                 r.right - 17.27f,
                 r.bottom - 16.27f,
@@ -215,13 +236,48 @@ internal object BubblePaths {
                 r.left + 0.64091f * r.width,
                 r.bottom - 4.8f,
             )
-            cubicTo(r.left + 0.57742f * r.width, r.bottom - 20.15f, r.left + 18.89f, r.bottom - 17.28f, r.left + 18.89f, r.bottom - 17.28f)
-            cubicTo(r.left + 20f, r.bottom - 20.43f, r.left + 19.36f, r.bottom - 27.84f, r.left + 12.91f, r.bottom - 27.61f)
-            cubicTo(r.left + 23.52f, r.bottom - 39.85f, r.left + 6.37f, r.bottom - 40.85f, r.left + 6.37f, r.bottom - 40.85f)
+            cubicTo(
+                r.left + 0.57742f * r.width,
+                r.bottom - 20.15f,
+                r.left + 18.89f,
+                r.bottom - 17.28f,
+                r.left + 18.89f,
+                r.bottom - 17.28f,
+            )
+            cubicTo(
+                r.left + 20f,
+                r.bottom - 20.43f,
+                r.left + 19.36f,
+                r.bottom - 27.84f,
+                r.left + 12.91f,
+                r.bottom - 27.61f,
+            )
+            cubicTo(
+                r.left + 23.52f,
+                r.bottom - 39.85f,
+                r.left + 6.37f,
+                r.bottom - 40.85f,
+                r.left + 6.37f,
+                r.bottom - 40.85f,
+            )
             cubicTo(r.left + 27.23f, r.bottom - 62.72f, r.left + 4.37f, r.top + 23.24f, r.left + 4.37f, r.top + 23.24f)
             cubicTo(r.left + 4.37f, r.top + 23.24f, r.left + 22.03f, r.top + 34.9f, r.left + 18.89f, r.top + 19.9f)
-            cubicTo(r.left + 18.89f, r.top + 19.9f, r.left + 0.23127f * r.width, r.top + 25.05f, r.left + 0.22459f * r.width, r.top + 4.37f)
-            cubicTo(r.left + 0.22459f * r.width, r.top + 4.37f, r.right - 85.74f, r.top + 25.11f, r.right - 19.63f, r.top + 19.49f)
+            cubicTo(
+                r.left + 18.89f,
+                r.top + 19.9f,
+                r.left + 0.23127f * r.width,
+                r.top + 25.05f,
+                r.left + 0.22459f * r.width,
+                r.top + 4.37f,
+            )
+            cubicTo(
+                r.left + 0.22459f * r.width,
+                r.top + 4.37f,
+                r.right - 85.74f,
+                r.top + 25.11f,
+                r.right - 19.63f,
+                r.top + 19.49f,
+            )
             close()
         }
 
@@ -290,7 +346,14 @@ internal object BubblePaths {
                 r.left + 0.47283f * r.width,
                 r.bottom - 0.25f,
             )
-            cubicTo(r.left + 0.34563f * r.width, r.bottom - 21.96f, r.left + 10.51f, r.bottom - 12.2f, r.left + 10.51f, r.bottom - 12.2f)
+            cubicTo(
+                r.left + 0.34563f * r.width,
+                r.bottom - 21.96f,
+                r.left + 10.51f,
+                r.bottom - 12.2f,
+                r.left + 10.51f,
+                r.bottom - 12.2f,
+            )
             cubicTo(
                 r.left + 14.03f,
                 r.bottom - 42.15f,
@@ -299,7 +362,14 @@ internal object BubblePaths {
                 r.left + 0.37f,
                 r.top + 0.44498f * r.height,
             )
-            cubicTo(r.left + 0.37f, r.top + 0.44498f * r.height, r.left + 15.7f, r.top + 37.61f, r.left + 11.79f, r.top + 17.48f)
+            cubicTo(
+                r.left + 0.37f,
+                r.top + 0.44498f * r.height,
+                r.left + 15.7f,
+                r.top + 37.61f,
+                r.left + 11.79f,
+                r.top + 17.48f,
+            )
             cubicTo(
                 r.left + 11.79f,
                 r.top + 17.48f,
@@ -332,7 +402,14 @@ internal object BubblePaths {
                 r.right - 2.24f,
                 r.top + 0.32727f * r.height,
             )
-            cubicTo(r.right - 14.77f, r.top + 0.45623f * r.height, r.right - 10.73f, r.bottom - 36.27f, r.right - 0.39f, r.bottom - 32.48f)
+            cubicTo(
+                r.right - 14.77f,
+                r.top + 0.45623f * r.height,
+                r.right - 10.73f,
+                r.bottom - 36.27f,
+                r.right - 0.39f,
+                r.bottom - 32.48f,
+            )
             cubicTo(
                 r.right - 12.66f,
                 r.bottom - 25.75f,
@@ -424,7 +501,14 @@ internal object BubblePaths {
                 r.left + 0.41092f * r.width,
                 r.bottom - 1.54f,
             )
-            cubicTo(r.left + 0.29973f * r.width, r.bottom - 20.99f, r.left + 15.54f, r.bottom - 17.01f, r.left + 15.54f, r.bottom - 17.01f)
+            cubicTo(
+                r.left + 0.29973f * r.width,
+                r.bottom - 20.99f,
+                r.left + 15.54f,
+                r.bottom - 17.01f,
+                r.left + 15.54f,
+                r.bottom - 17.01f,
+            )
             cubicTo(
                 r.left + 22.15f,
                 r.bottom - 37.83f,
@@ -433,7 +517,14 @@ internal object BubblePaths {
                 r.left + 0.37f,
                 r.top + 0.54290f * r.height,
             )
-            cubicTo(r.left + 0.37f, r.top + 0.54290f * r.height, r.left + 22.93f, r.top + 62.99f, r.left + 15.54f, r.top + 15.17f)
+            cubicTo(
+                r.left + 0.37f,
+                r.top + 0.54290f * r.height,
+                r.left + 22.93f,
+                r.top + 62.99f,
+                r.left + 15.54f,
+                r.top + 15.17f,
+            )
             cubicTo(
                 r.left + 15.54f,
                 r.top + 15.17f,
@@ -450,7 +541,14 @@ internal object BubblePaths {
                 r.left + 0.73486f * r.width,
                 r.top + 4.06f,
             )
-            cubicTo(r.left + 0.73486f * r.width, r.top + 4.06f, r.right - 47.44f, r.top + 23.58f, r.right - 13.15f, r.top + 15.17f)
+            cubicTo(
+                r.left + 0.73486f * r.width,
+                r.top + 4.06f,
+                r.right - 47.44f,
+                r.top + 23.58f,
+                r.right - 13.15f,
+                r.top + 15.17f,
+            )
             cubicTo(
                 r.right - 13.15f,
                 r.top + 15.17f,
@@ -459,7 +557,14 @@ internal object BubblePaths {
                 r.right - 0.16f,
                 r.top + 0.62810f * r.height,
             )
-            cubicTo(r.right - 0.16f, r.top + 0.62810f * r.height, r.right - 13.67f, r.bottom - 34.42f, r.right - 13.15f, r.bottom - 17.01f)
+            cubicTo(
+                r.right - 0.16f,
+                r.top + 0.62810f * r.height,
+                r.right - 13.67f,
+                r.bottom - 34.42f,
+                r.right - 13.15f,
+                r.bottom - 17.01f,
+            )
             close()
         }
 
@@ -528,8 +633,22 @@ internal object BubblePaths {
                 r.left + 0.39291f * r.width,
                 r.bottom - 1.25f,
             )
-            cubicTo(r.left + 0.38591f * r.width, r.bottom - 23.44f, r.left + 28.1f, r.bottom - 3.17f, r.left + 28.1f, r.bottom - 3.17f)
-            cubicTo(r.left + 34.93f, r.bottom - 21.36f, r.left + 14.31f, r.bottom - 13.34f, r.left + 14.31f, r.bottom - 13.34f)
+            cubicTo(
+                r.left + 0.38591f * r.width,
+                r.bottom - 23.44f,
+                r.left + 28.1f,
+                r.bottom - 3.17f,
+                r.left + 28.1f,
+                r.bottom - 3.17f,
+            )
+            cubicTo(
+                r.left + 34.93f,
+                r.bottom - 21.36f,
+                r.left + 14.31f,
+                r.bottom - 13.34f,
+                r.left + 14.31f,
+                r.bottom - 13.34f,
+            )
             cubicTo(
                 r.left + 24.28f,
                 r.bottom - 63.59f,
@@ -538,9 +657,30 @@ internal object BubblePaths {
                 r.left + 1.75f,
                 r.top + 0.31560f * r.height,
             )
-            cubicTo(r.left + 1.75f, r.top + 0.31560f * r.height, r.left + 21.48f, r.top + 36.33f, r.left + 14.31f, r.top + 14.84f)
-            cubicTo(r.left + 14.31f, r.top + 14.84f, r.left + 0.34044f * r.width, r.top + 19.4f, r.left + 0.54680f * r.width, r.top + 1.04f)
-            cubicTo(r.left + 0.54680f * r.width, r.top + 1.04f, r.right - 51.33f, r.top + 27.28f, r.right - 26.01f, r.top + 3.13f)
+            cubicTo(
+                r.left + 1.75f,
+                r.top + 0.31560f * r.height,
+                r.left + 21.48f,
+                r.top + 36.33f,
+                r.left + 14.31f,
+                r.top + 14.84f,
+            )
+            cubicTo(
+                r.left + 14.31f,
+                r.top + 14.84f,
+                r.left + 0.34044f * r.width,
+                r.top + 19.4f,
+                r.left + 0.54680f * r.width,
+                r.top + 1.04f,
+            )
+            cubicTo(
+                r.left + 0.54680f * r.width,
+                r.top + 1.04f,
+                r.right - 51.33f,
+                r.top + 27.28f,
+                r.right - 26.01f,
+                r.top + 3.13f,
+            )
             cubicTo(r.right - 26.01f, r.top + 3.13f, r.right - 34.4f, r.top + 19.92f, r.right - 15.38f, r.top + 14.84f)
             cubicTo(
                 r.right - 15.38f,
@@ -550,7 +690,14 @@ internal object BubblePaths {
                 r.right - 0.18f,
                 r.top + 0.35274f * r.height,
             )
-            cubicTo(r.right - 0.18f, r.top + 0.35274f * r.height, r.right - 19.74f, r.bottom - 59.65f, r.right - 15.38f, r.bottom - 13.73f)
+            cubicTo(
+                r.right - 0.18f,
+                r.top + 0.35274f * r.height,
+                r.right - 19.74f,
+                r.bottom - 59.65f,
+                r.right - 15.38f,
+                r.bottom - 13.73f,
+            )
         }
 
     fun polygon4(r: Rect): Path =
@@ -619,13 +766,27 @@ internal object BubblePaths {
         Path().apply {
             moveTo(r.right - 27.53f, r.bottom - 1.43f)
             lineTo(r.left + 26.53f, r.bottom - 1.43f)
-            cubicTo(r.left + 16.36f, r.bottom - 11.58f, r.left + 10.66f, r.bottom - 17.27f, r.left + 0.5f, r.bottom - 27.43f)
+            cubicTo(
+                r.left + 16.36f,
+                r.bottom - 11.58f,
+                r.left + 10.66f,
+                r.bottom - 17.27f,
+                r.left + 0.5f,
+                r.bottom - 27.43f,
+            )
             lineTo(r.left + 0.5f, r.top + 27.5f)
             cubicTo(r.left + 10.66f, r.top + 17.35f, r.left + 16.36f, r.top + 11.65f, r.left + 26.53f, r.top + 1.5f)
             lineTo(r.right - 27.53f, r.top + 1.5f)
             cubicTo(r.right - 17.36f, r.top + 11.65f, r.right - 11.66f, r.top + 17.35f, r.right - 1.5f, r.top + 27.5f)
             lineTo(r.right - 1.5f, r.bottom - 27.43f)
-            cubicTo(r.right - 11.66f, r.bottom - 17.27f, r.right - 17.36f, r.bottom - 11.58f, r.right - 27.53f, r.bottom - 1.43f)
+            cubicTo(
+                r.right - 11.66f,
+                r.bottom - 17.27f,
+                r.right - 17.36f,
+                r.bottom - 11.58f,
+                r.right - 27.53f,
+                r.bottom - 1.43f,
+            )
             close()
         }
 
@@ -743,13 +904,27 @@ internal object BubblePaths {
         Path().apply {
             moveTo(r.right - 22.64f, r.bottom - 0.43f)
             lineTo(r.left + 23.5f, r.bottom - 0.43f)
-            cubicTo(r.left + 23.5f, r.bottom - 13.13f, r.left + 13.2f, r.bottom - 23.43f, r.left + 0.5f, r.bottom - 23.43f)
+            cubicTo(
+                r.left + 23.5f,
+                r.bottom - 13.13f,
+                r.left + 13.2f,
+                r.bottom - 23.43f,
+                r.left + 0.5f,
+                r.bottom - 23.43f,
+            )
             lineTo(r.left + 0.5f, r.top + 24.5f)
             cubicTo(r.left + 13.2f, r.top + 24.5f, r.left + 23.5f, r.top + 14.2f, r.left + 23.5f, r.top + 1.5f)
             lineTo(r.right - 22.64f, r.top + 1.5f)
             cubicTo(r.right - 22.64f, r.top + 14.2f, r.right - 13.35f, r.top + 24.5f, r.right - 0.64f, r.top + 24.5f)
             lineTo(r.right - 0.64f, r.bottom - 23.43f)
-            cubicTo(r.right - 13.35f, r.bottom - 23.43f, r.right - 22.64f, r.bottom - 13.13f, r.right - 22.64f, r.bottom - 0.43f)
+            cubicTo(
+                r.right - 13.35f,
+                r.bottom - 23.43f,
+                r.right - 22.64f,
+                r.bottom - 13.13f,
+                r.right - 22.64f,
+                r.bottom - 0.43f,
+            )
             close()
         }
 

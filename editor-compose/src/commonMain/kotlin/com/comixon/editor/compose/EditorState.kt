@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.comixon.editor.core.EditorProject
 
-/** Single-owner editor session. A drag is recorded as one undo step. */
+/** Edits between beginGesture and endGesture form a single undo entry. */
 @Stable
 class EditorState(
     initialProject: EditorProject,

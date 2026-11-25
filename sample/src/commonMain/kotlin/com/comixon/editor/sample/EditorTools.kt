@@ -108,8 +108,16 @@ internal fun CropTools(state: EditorState) {
             RoundEditorButton(Icons.AutoMirrored.Outlined.RotateRight, EditorLabel.RotateRight, {
                 state.edit { EditorReducer.rotateSelectedFrameCrop(it, 90) }
             })
-            RoundEditorButton(Icons.Outlined.Flip, EditorLabel.Flip, { state.edit { EditorReducer.flipSelectedFrameCrop(it) } })
-            RoundEditorButton(Icons.Outlined.RestartAlt, EditorLabel.Reset, { state.edit(EditorReducer::resetSelectedFrameCrop) })
+            RoundEditorButton(
+                Icons.Outlined.Flip,
+                EditorLabel.Flip,
+                { state.edit { EditorReducer.flipSelectedFrameCrop(it) } },
+            )
+            RoundEditorButton(
+                Icons.Outlined.RestartAlt,
+                EditorLabel.Reset,
+                { state.edit(EditorReducer::resetSelectedFrameCrop) },
+            )
         }
     }
 }
@@ -139,8 +147,12 @@ internal fun LayerList(
                 if (frame?.layers.isNullOrEmpty()) Text(EditorLabel.NoLayers.text())
                 if (frame != null) {
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        TextButton({ state.edit { EditorReducer.moveFrame(it, frame.id, -1) } }) { Text(EditorLabel.MoveLeft.text()) }
-                        TextButton({ state.edit { EditorReducer.moveFrame(it, frame.id, 1) } }) { Text(EditorLabel.MoveRight.text()) }
+                        TextButton(
+                            { state.edit { EditorReducer.moveFrame(it, frame.id, -1) } },
+                        ) { Text(EditorLabel.MoveLeft.text()) }
+                        TextButton(
+                            { state.edit { EditorReducer.moveFrame(it, frame.id, 1) } },
+                        ) { Text(EditorLabel.MoveRight.text()) }
                         if (state.project.frames.size > 1) {
                             TextButton({
                                 state.edit { EditorReducer.deleteFrame(it, frame.id) }

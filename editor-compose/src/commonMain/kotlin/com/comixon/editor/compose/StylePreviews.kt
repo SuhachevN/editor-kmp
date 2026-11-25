@@ -21,7 +21,6 @@ import com.comixon.editor.rendering.BubbleTailGeometry
 import com.comixon.editor.rendering.drawLettering
 import com.comixon.editor.rendering.prepareLettering
 
-/** Catalog artwork is drawn with the same paths as document layers. */
 @Composable
 fun BubbleStylePreview(
     style: BubbleStyle,
@@ -50,7 +49,14 @@ fun LetteringStylePreview(
     val measurer = rememberEditorTextMeasurer()
     val layer =
         remember(style) {
-            EditorLetterLayer("preview", EditorRect(0.0, 0.0, 600.0, 400.0), style.type, style.index, "WOW!", FontSize.XXL)
+            EditorLetterLayer(
+                "preview",
+                EditorRect(0.0, 0.0, 600.0, 400.0),
+                style.type,
+                style.index,
+                "WOW!",
+                FontSize.XXL,
+            )
         }
     val prepared =
         remember(layer, families, measurer) {

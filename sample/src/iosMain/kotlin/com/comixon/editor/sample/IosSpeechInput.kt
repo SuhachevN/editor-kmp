@@ -1,6 +1,6 @@
 package com.comixon.editor.sample
 
-/** The iOS host owns microphone permissions and the Apple Speech session. Callbacks use the main thread. */
+/** Implemented by the Swift host. All callbacks must run on the main thread. */
 interface IosSpeechInput {
     fun start(listener: IosSpeechListener)
 
