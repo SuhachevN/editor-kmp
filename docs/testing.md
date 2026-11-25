@@ -1,5 +1,7 @@
 # Testing the standalone editor
 
+Installation: [English](installation.en.md) · [Русский](installation.ru.md).
+
 ## Android
 
 Install the APK from the android-demo artifact in GitHub Actions. Allow installation from the browser/file manager when Android asks. No development tools are needed for a manual check.

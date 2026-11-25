@@ -11,12 +11,14 @@ A standalone **Kotlin Multiplatform** comic editor for Android, iOS and Desktop 
 
 ## Try it
 
+Installation guides: [English](docs/installation.en.md) · [Русский](docs/installation.ru.md).
+
 Open the latest successful [Build and test run](https://github.com/SuhachevN/editor-kmp/actions/workflows/ci.yml) and download an artifact:
 
 | Platform | Artifact | Start |
 | --- | --- | --- |
 | Android 8+ | android-demo | Unzip and install the APK |
-| iOS 15+ | ios-unsigned | Sign the IPA with your Apple ID before installing; see [iOS notes](docs/testing.md#ios) |
+| iOS 15+ | ios-unsigned | Sign the IPA with your Apple ID before installing; see [iOS installation](docs/installation.en.md#ios) |
 | Windows | windows-demo | Unzip and run ComixonEditor.exe |
 | macOS (Apple Silicon) | macos-demo-macos-15 | Open the DMG and copy the app to Applications |
 | macOS (Intel) | macos-demo-macos-15-intel | Open the DMG and copy the app to Applications |
