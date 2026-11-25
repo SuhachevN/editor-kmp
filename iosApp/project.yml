@@ -16,6 +16,10 @@ targets:
     type: application
     platform: iOS
     sources: [Sources]
+    info:
+      path: build/Info.plist
+      properties:
+        CADisableMinimumFrameDurationOnPhone: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.comixon.editor.sample

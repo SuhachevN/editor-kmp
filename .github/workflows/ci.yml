@@ -155,16 +155,24 @@ jobs:
         run: ./gradlew :editor-core:iosSimulatorArm64Test :editor-compose:iosSimulatorArm64Test :editor-network:iosSimulatorArm64Test :sample:iosSimulatorArm64Test :sample:linkDebugFrameworkIosSimulatorArm64
       - run: brew install xcodegen
       - run: xcodegen generate --spec iosApp/project.yml
-      - name: Choose iPhone simulator
+      - name: Choose iPhone Pro simulator
         run: |
-          simulator_id=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; devices=json.load(sys.stdin)["devices"]; print(next(d["udid"] for group in devices.values() for d in group if d["name"].startswith("iPhone")))')
+          simulator_id=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; devices=json.load(sys.stdin)["devices"]; print(next(d["udid"] for group in devices.values() for d in group if d["name"].startswith("iPhone") and "Pro" in d["name"]))')
           echo "IOS_SIMULATOR_ID=$simulator_id" >> "$GITHUB_ENV"
-      - name: Build and test iOS application
+      - name: Build iOS application for testing
+        run: |
+          xcodebuild -project iosApp/ComixonEditor.xcodeproj -scheme ComixonEditor \
+            -configuration Debug -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+            -derivedDataPath build/ios-simulator CODE_SIGNING_ALLOWED=NO build-for-testing
+      - name: Check simulator display configuration
+        run: |
+          python3 -c 'import plistlib; p="build/ios-simulator/Build/Products/Debug-iphonesimulator/ComixonEditorApp.app/Info.plist"; assert plistlib.load(open(p, "rb")).get("CADisableMinimumFrameDurationOnPhone") is True, "ProMotion must be enabled as a Boolean in Info.plist"'
+      - name: Test iOS application
         run: |
           xcodebuild -project iosApp/ComixonEditor.xcodeproj -scheme ComixonEditor \
             -configuration Debug -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
             -derivedDataPath build/ios-simulator -resultBundlePath build/ios-tests.xcresult \
-            CODE_SIGNING_ALLOWED=NO test
+            CODE_SIGNING_ALLOWED=NO test-without-building
       - name: Build unsigned iPhone application
         run: |
           xcodebuild -project iosApp/ComixonEditor.xcodeproj -scheme ComixonEditor \
@@ -172,6 +180,7 @@ jobs:
             -derivedDataPath build/ios-device CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
       - name: Package unsigned IPA
         run: |
+          python3 -c 'import plistlib; p="build/ios-device/Build/Products/Release-iphoneos/ComixonEditorApp.app/Info.plist"; assert plistlib.load(open(p, "rb")).get("CADisableMinimumFrameDurationOnPhone") is True, "ProMotion must be enabled as a Boolean in Info.plist"'
           mkdir -p build/ios-package/Payload
           cp -R build/ios-device/Build/Products/Release-iphoneos/ComixonEditorApp.app build/ios-package/Payload/
           cd build/ios-package
