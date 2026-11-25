@@ -1,24 +1,8 @@
 # Testing the standalone editor
 
-Installation: [English](installation.en.md) · [Русский](installation.ru.md).
+Installation: [English](../README.md#installation) · [Русский](../README.md#установка).
 
-## Android
-
-Install the APK from the android-demo artifact in GitHub Actions. Allow installation from the browser/file manager when Android asks. No development tools are needed for a manual check.
-For automated tests, connect a phone with USB debugging or start an emulator, then run the connectedAndroidDeviceTest tasks in the README. The test build is separate from the original Comixon app.
-
-## Windows
-
-Unzip windows-demo and run ComixonEditor.exe. Keep the app and runtime directories together. Alternatively, install JDK 17 and run gradlew.bat :sample:run from the checkout.
-
-## macOS
-
-Use macos-demo-macos-15 for Apple Silicon or macos-demo-macos-15-intel for Intel. Open the DMG and copy the app to Applications. Developer signing and notarization need an Apple developer identity, which this repository does not contain. For this private unsigned test build, use Privacy & Security → Open Anyway if offered. If Gatekeeper reports a damaged app, run from the trusted checkout with ./gradlew :sample:run instead.
-The packaged app includes the native speech helper. A source run compiles it with swiftc, so Xcode command-line tools are needed.
-
-## Linux
-
-Install JDK 17 and run ./gradlew :sample:run. Shared tests run under Xvfb in CI. The editor microphone currently has no Linux adapter; keyboard input and the desktop environment's voice input remain available.
+For Android device tests, connect a phone with USB debugging or start an emulator, then run the commands in the [README](../README.md#test). Linux tests run under Xvfb in CI; its microphone adapter is not implemented.
 
 ## Manual checks
 
@@ -41,12 +25,6 @@ Start generation sends separate normalized JPEG payloads: cropped/filter-adjuste
 Live check on 2026-11-24 before enabling the no-token Start generation guard, Android emulator, default dev server: the anime endpoint returned an image, which was downloaded and applied; the dialogue endpoint rejected the anonymous request with an authorization error. Authenticated dialogue and account limits still need validation with an eligible session. MockEngine tests independently cover headers, both request bodies, response mapping, authorization errors, timeouts and partial success.
 
 ## iOS
-
-Download **ios-unsigned** from the successful workflow and unzip comixon-editor-unsigned.ipa. This is an ARM64 iPhone/iPad build for iOS 15+. It is not signed and cannot be installed directly from GitHub.
-
-Without a Mac, use [Sideloadly](https://sideloadly.io/) on Windows, following its current installation requirements. Connect and trust the iPhone over USB, select the IPA and sign it with your own Apple ID in Sideloadly. On iOS 16+, enable Developer Mode when required; trust the developer profile in Settings if prompted. A free account's signature expires after seven days, so the app needs to be signed again. See the [official FAQ](https://sideloadly.io/faq) for limits and renewal. Apple credentials and signing certificates are never needed by this repository or its workflows.
-
-With a Mac, install Xcode and XcodeGen, run `xcodegen generate --spec iosApp/project.yml`, then open iosApp/ComixonEditor.xcodeproj. Select the ComixonEditor scheme and an Apple Silicon iOS Simulator. For a physical device choose your own development team under Signing & Capabilities. The host uses direct Kotlin framework integration, without CocoaPods. Intel iOS Simulator is not a configured target.
 
 CI runs shared Kotlin tests and an XCTest welcome → demo → anonymous-generation check on iPhone Simulator. The ios-test-reports artifact includes the XCTest result bundle and screenshot. This does not prove recording quality, real-device photo selection or installation/signing: check those on an iPhone using the manual checklist above.
 
